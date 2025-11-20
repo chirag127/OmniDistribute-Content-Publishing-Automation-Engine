@@ -19,8 +19,6 @@ import { DevToAdapter } from "./adapters/devto.js";
 import { HashnodeAdapter } from "./adapters/hashnode.js";
 import { MediumAdapter } from "./adapters/medium.js";
 import { WordPressAdapter } from "./adapters/wordpress.js";
-import { GhostAdapter } from "./adapters/ghost.js";
-import { HubSpotAdapter } from "./adapters/hubspot.js";
 import { BloggerAdapter } from "./adapters/blogger.js";
 import { TumblrAdapter } from "./adapters/tumblr.js";
 import { WixAdapter } from "./adapters/wix.js";
@@ -38,8 +36,6 @@ const ADAPTERS: Adapter[] = [
     new HashnodeAdapter(),
     new MediumAdapter(),
     new WordPressAdapter(),
-    new GhostAdapter(),
-    new HubSpotAdapter(),
     new BloggerAdapter(),
     new TumblrAdapter(),
     new WixAdapter(),

@@ -34,12 +34,8 @@ jobs:
                   HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
                   MEDIUM_INTEGRATION_TOKEN: ${{ secrets.MEDIUM_INTEGRATION_TOKEN }}
                   MEDIUM_USER_ID: ${{ secrets.MEDIUM_USER_ID }}
-                  WORDPRESS_URL: ${{ secrets.WORDPRESS_URL }}
-                  WORDPRESS_USERNAME: ${{ secrets.WORDPRESS_USERNAME }}
-                  WORDPRESS_APP_PASSWORD: ${{ secrets.WORDPRESS_APP_PASSWORD }}
-                  GHOST_URL: ${{ secrets.GHOST_URL }}
-                  GHOST_ADMIN_KEY: ${{ secrets.GHOST_ADMIN_KEY }}
-                  HUBSPOT_ACCESS_TOKEN: ${{ secrets.HUBSPOT_ACCESS_TOKEN }}
+                  WORDPRESS_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+                  WORDPRESS_SITE_ID: ${{ secrets.WORDPRESS_SITE_ID }}
                   BLOGGER_CLIENT_EMAIL: ${{ secrets.BLOGGER_CLIENT_EMAIL }}
                   BLOGGER_PRIVATE_KEY: ${{ secrets.BLOGGER_PRIVATE_KEY }}
                   BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
