@@ -357,6 +357,80 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 
 **⚠️ Notes:**
 
+-   Token expires after a period - you may need to refresh
+-   Requires a WordPress.com site (not self-hosted WordPress)
+
+---
+
+### 5. 📧 Blogger OAuth 2.0
+
+**What it's for:** Publishing to your Blogger/Blogspot blog via Google APIs.
+
+**Steps to obtain:**
+
+1. **Create a Google Cloud Project:**
+
+    - Go to [console.cloud.google.com](https://console.cloud.google.com/)
+    - Click **"Create Project"**
+    - Name it (e.g., "Omni-Publisher Blogger")
+
+2. **Enable Blogger API:**
+
+    - In the project dashboard, go to **"APIs & Services"** → **"Library"**
+    - Search for **"Blogger API v3"**
+    - Click **"Enable"**
+
+3. **Create OAuth Credentials:**
+
+    - Go to **"APIs & Services"** → **"Credentials"**
+    - Click **"Create Credentials"** → **"OAuth client ID"**
+    - Application type: **"Web application"**
+    - Name: "Omni-Publisher"
+    - **Authorized redirect URIs:** Add `http://localhost:3000/callback`
+    - Click **"Create"**
+
+4. **Get Client ID and Secret:**
+
+    - Copy the **Client ID** and **Client Secret**
+    - Add them to your `.env` file:
+
+    ```env
+    BLOGGER_CLIENT_ID=your_client_id
+    BLOGGER_CLIENT_SECRET=your_client_secret
+    ```
+
+5. **Generate Refresh Token:**
+
+    - Run the helper script included in this repo:
+
+    ```bash
+    npx tsx scripts/get-blogger-token.ts
+    ```
+
+    - Follow the on-screen instructions to log in.
+    - Copy the generated `BLOGGER_REFRESH_TOKEN` to your `.env`.
+
+6. **Get Blog ID:**
+
+    - Log in to your [Blogger Dashboard](https://www.blogger.com/).
+    - Look at the URL in your browser address bar.
+    - It will look like: `https://www.blogger.com/blog/posts/1234567890123456789`
+    - The number at the end (`1234567890123456789`) is your **Blog ID**.
+    - Add it to `BLOGGER_BLOG_ID` in your `.env`.
+
+**📖 Documentation:** [developers.google.com/blogger](https://developers.google.com/blogger)
+
+**⚠️ Notes:**
+
+-   This method uses standard Google Login (OAuth 2.0).
+-   The refresh token allows the app to publish indefinitely without re-login.
+
+---
+
+### 6. 🎨 Tumblr OAuth 1.0a
+
+**What it's for:** Publishing posts to your Tumblr blog.
+
 **Steps to obtain:**
 
 1. **Register an application:**
@@ -407,29 +481,16 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 
 **Steps to obtain:**
 
-1. **Create a Wix site** (if you don't have one):
+1.  **Create a Wix site** (if you don't have one):
 
-    - Visit [wix.com](https://www.wix.com/) and create a free site with a blog
+    -   Visit [wix.com](https://www.wix.com/) and create a free site with a blog
 
-2. **Access API settings:**
+2.  **Access API settings:**
 
-    - Go to your Wix Dashboard
-    - Navigate to **Settings** → **Business Info** → **API Keys**
+        - Go to your Wix Dashboard
+        - Navigate to **Settings** → **Business Info** → **API Keys**
 
-3. **Create API Key:**
-
-    - Click **"Generate New API Key"**
-    - Name it: "Omni-Publisher"
-    - Select permissions: **Blog (write)**
-    - Copy the key
-
-4. **Add to `.env`:**
-    ```env
-    WIX_API_KEY=your_wix_api_key
-    WIX_SITE_ID=your_site_id
-    ```
-
-**📖 Documentation:** [dev.wix.com/api/rest](https://dev.wix.com/api/rest/getting-started)
+    **📖 Documentation:** [dev.wix.com/api/rest](https://dev.wix.com/api/rest/getting-started)
 
 **⚠️ Notes:**
 
