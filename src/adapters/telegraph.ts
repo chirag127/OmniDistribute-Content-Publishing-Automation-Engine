@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Adapter, Post, PublishResult } from "../types.js";
 import { logger } from "../utils/logger.js";
+import { markdownToTelegraph } from "../utils/telegraph-converter.js";
 
 export class TelegraphAdapter implements Adapter {
     name = "telegraph";
@@ -22,10 +23,8 @@ export class TelegraphAdapter implements Adapter {
             // But for now, we'll send it as a single paragraph of text (or HTML string if supported? No, it needs nodes).
             // We'll do a basic split by newlines to create paragraphs.
 
-            const contentNodes = post.content.split("\n\n").map((para) => ({
-                tag: "p",
-                children: [para],
-            }));
+            // Convert Markdown to Telegraph Nodes
+            const contentNodes = markdownToTelegraph(post.content);
 
             const response = await axios.post(
                 "https://api.telegra.ph/createPage",
