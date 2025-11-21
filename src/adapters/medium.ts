@@ -81,7 +81,7 @@ export class MediumAdapter implements Adapter {
                     (typeof data === "string" && data.includes("cloudflare"))
                 ) {
                     logger.warn(
-                        "Medium API blocked by Cloudflare. Note: Medium API v1 is deprecated since March 2023."
+                        "Medium API blocked. CRITICAL: Medium API is CLOSED to new integrations as of Jan 2025."
                     );
                     logger.warn(
                         "Visit https://api.medium.com/v1/me in a browser to complete the challenge, then retry."

@@ -299,33 +299,49 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 
 **What it's for:** Publishing articles to Medium (legacy feature).
 
-**⚠️ IMPORTANT:** As of January 1, 2025, Medium has **closed its API to new integrations**. If you had a token before this date, it will continue to work. Otherwise, this platform is unavailable.
+> **⚠️ CRITICAL WARNING (Late 2025):** Medium has **permanently closed its API to new integrations** as of early 2025.
+>
+> -   **New Users:** You CANNOT generate a new token. This platform is effectively unavailable for automated publishing unless you already have a token.
+> -   **Existing Users:** If you generated a token before Jan 2025, it _may_ still work, but support is not guaranteed.
 
-**Steps to obtain (for existing users only):**
+**Steps to obtain (Legacy/Grandfathered only):**
 
 1. **Log in** to [Medium](https://medium.com/)
-2. Go to **Settings** → **Integration tokens**
-3. Click **"Create an integration token"**
-4. Enter a description
-5. Click **"Get token"** and copy it:
+2. Go to **Settings** → **Security and apps** → **Integration tokens**
+3. If the option exists, click **"Get integration token"**
+4. Copy the token to your `.env`:
     ```env
     MEDIUM_TOKEN=your_medium_token_here
     ```
 
-**📖 Documentation:** [github.com/Medium/medium-api-docs](https://github.com/Medium/medium-api-docs)
+**📖 Documentation:** [github.com/Medium/medium-api-docs](https://github.com/Medium/medium-api-docs) (Archived)
 
-**⚠️ Notes:**
-
--   **Deprecated for new users** - consider skipping this platform
--   Unofficial APIs may exist but are not supported by Omni-Publisher
+**Alternative:** Consider using the **Unofficial Medium API** (via RapidAPI) if you strictly need automation, though this requires a separate subscription and adapter modification.
 
 ---
 
-### 4. 🌐 WordPress.com OAuth Token
+### 4. 🌐 WordPress.com OAuth Token (or Application Password)
 
 **What it's for:** Publishing to your WordPress.com blog.
 
-**Steps to obtain:**
+**Method A: Application Passwords (Recommended for Personal Scripts)**
+_Easiest method for single-user automation._
+
+1. **Log in** to your WordPress.com account.
+2. Go to **[https://wordpress.com/me/security/two-step-authentication](https://wordpress.com/me/security/two-step-authentication)** (Security Settings).
+3. Scroll down to **"Application Passwords"**.
+4. Enter a name (e.g., "Omni-Publisher") and click **"Generate Password"**.
+5. **Copy the password** immediately.
+6. Add to `.env` (Note: Use `WORDPRESS_TOKEN` for the password):
+    ```env
+    WORDPRESS_TOKEN=your_generated_app_password
+    WORDPRESS_SITE_ID=yourblog.wordpress.com
+    # Note: For this method, the adapter might need slight adjustment to use Basic Auth instead of Bearer.
+    # If using standard OAuth (Method B), keep as is.
+    ```
+
+**Method B: OAuth 2.0 (Standard)**
+_Required if you want to distribute this tool to other users._
 
 1. **Create a WordPress.com application:**
 
@@ -360,11 +376,6 @@ This section provides **step-by-step instructions** for obtaining API keys and t
     ```
 
 **📖 Documentation:** [developer.wordpress.com/docs/api](https://developer.wordpress.com/docs/api/)
-
-**⚠️ Notes:**
-
--   Token expires after a period - you may need to refresh
--   Requires a WordPress.com site (not self-hosted WordPress)
 
 ---
 
@@ -711,6 +722,8 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 
 **What it's for:** Posting to your subreddit or profile.
 
+**⚠️ Important (2025 Update):** Reddit has tightened API access. You may need to request approval for your app, even for personal scripts.
+
 **Steps to obtain:**
 
 1. **Create Reddit App:**
@@ -719,7 +732,7 @@ This section provides **step-by-step instructions** for obtaining API keys and t
     - Scroll down and click **"create another app..."**
     - Fill in:
         - **Name:** Omni-Publisher
-        - **App type:** Select **"script"**
+        - **App type:** Select **"script"** (Critical for personal use)
         - **Redirect URI:** `http://localhost:8080`
     - Click **"create app"**
 
@@ -741,8 +754,9 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 
 **⚠️ Notes:**
 
--   Uses password flow (script type apps only)
+-   Uses **Password Grant** flow (script type apps only)
 -   Ensure you have posting permissions in the target subreddit
+-   **User-Agent:** The adapter uses `OmniPublisher/1.0`. If you get blocked, you may need to update this in `src/adapters/reddit.ts` to `android:com.example.omnipublisher:v1.0 (by /u/yourusername)`.
 
 ---
 
@@ -917,115 +931,6 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 -   Character limit: 280 characters including link
 
 ---
-
-### 19. 🧵 Threads Access Token (Meta)
-
-**What it's for:** Share blog post links to Meta's Threads platform.
-
-**Steps to obtain:**
-
-1. **Prerequisites:**
-
-    - Have a Facebook Page (create one if needed)
-    - Link your Threads account to this Facebook Page
-
-2. **Create a Facebook App:**
-
-    - Go to [developers.facebook.com](https://developers.facebook.com/)
-    - Click **"My Apps"** → **"Create App"**
-    - Choose app type: **"Business"**
-    - Fill in app details and create
-
-3. **Add Threads API Product:**
-
-    - In your app dashboard, click **"Add Product"**
-    - Find **"Threads API"** and click **"Set Up"**
-
-4. **Get Access Token:**
-
-    - Use **Meta's Graph API Explorer** or implement OAuth flow
-    - Request permissions: `threads_basic`, `threads_content_publish`
-    - Generate a **User Access Token**
-
-5. **Get Threads User ID:**
-
-    - Use Graph API to get your Threads User ID
-    - Call: `GET https://graph.threads.net/v1.0/me?fields=id&access_token=YOUR_TOKEN`
-
-6. **Add to `.env`:**
-    ```env
-    THREADS_ACCESS_TOKEN=your_access_token
-    THREADS_USER_ID=your_threads_user_id
-    ```
-
-**📖 Documentation:** [developers.facebook.com/docs/threads](https://developers.facebook.com/docs/threads)
-
-**⚠️ Notes:**
-
--   **Free Tier Limits:** 250 posts per day per user
--   Character limit: 500 characters
--   Requires Facebook Page connection
-
----
-
-### 20. 📘 Facebook Pages Access Token
-
-**What it's for:** Share blog post links to Facebook Pages.
-
-**Steps to obtain:**
-
-1. **Create a Facebook Page** (if you don't have one):
-
-    - Go to [facebook.com/pages/create](https://www.facebook.com/pages/create)
-    - Follow the setup wizard
-
-2. **Create a Facebook App:**
-
-    - Visit [developers.facebook.com](https://developers.facebook.com/)
-    - Click **"Create App"** → Choose **"Business"** type
-    - Fill in app details
-
-3. **Add Facebook Login Product:**
-
-    - In app dashboard, add **"Facebook Login"** product
-    - Configure OAuth redirect URIs if needed
-
-4. **Get Page Access Token:**
-
-    - Use **Graph API Explorer** ([developers.facebook.com/tools/explorer](https://developers.facebook.com/tools/explorer))
-    - Select your app
-    - Get User Access Token with permissions:
-        - `pages_manage_posts`
-        - `pages_read_engagement`
-        - `pages_show_list`
-    - Click **"Generate Access Token"** and authorize
-    - Get Page Access Token:
-        - Call `GET /{user-id}/accounts` endpoint
-        - Find your page and copy its `access_token`
-
-5. **Get Page ID:**
-
-    - Go to your Facebook Page
-    - Click **"About"**
-    - Scroll down to find **Page ID** (or look in URL)
-
-6. **Add to `.env`:**
-    ```env
-    FACEBOOK_PAGE_ACCESS_TOKEN=your_page_access_token
-    FACEBOOK_PAGE_ID=your_page_id
-    ```
-
-**📖 Documentation:** [developers.facebook.com/docs/pages-api](https://developers.facebook.com/docs/pages-api)
-
-**⚠️ Notes:**
-
--   Page Access Tokens can be set to never expire
--   Requires app review for public use
--   Free tier available with standard rate limits
-
----
-
-## 📚 Usage
 
 ### Publishing Content
 

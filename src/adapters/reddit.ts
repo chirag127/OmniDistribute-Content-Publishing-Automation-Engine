@@ -44,7 +44,7 @@ export class RedditAdapter implements Adapter {
                     headers: {
                         Authorization: `Basic ${auth}`,
                         "Content-Type": "application/x-www-form-urlencoded",
-                        "User-Agent": "OmniPublisher/1.0",
+                        "User-Agent": `android:com.omnipublisher.app:v1.0 (by /u/${process.env.REDDIT_USERNAME})`,
                     },
                 }
             );
@@ -69,7 +69,7 @@ export class RedditAdapter implements Adapter {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/x-www-form-urlencoded",
-                        "User-Agent": "OmniPublisher/1.0",
+                        "User-Agent": `android:com.omnipublisher.app:v1.0 (by /u/${process.env.REDDIT_USERNAME})`,
                     },
                 }
             );
