@@ -13,17 +13,282 @@ async function buildSite() {
     await fs.mkdir(PUBLIC_DIR, { recursive: true });
     await fs.mkdir(ASSETS_DIR, { recursive: true });
 
-    // Create styles.css
+    // Create modern, premium styles.css
     const cssContent = `
-    body { font-family: system-ui, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; color: #333; }
-    header { margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .meta { color: #666; font-size: 0.9rem; }
-    article { margin-bottom: 3rem; }
-    a { color: #0070f3; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; border-radius: 4px; }
-    img { max-width: 100%; height: auto; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #0070f3;
+        --primary-dark: #0051cc;
+        --secondary: #7928ca;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --border: #e1e4e8;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+        --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+        --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-hover: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        line-height: 1.7;
+        color: var(--text-primary);
+        background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    header {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--gradient);
+        color: white;
+        margin-bottom: 3rem;
+        border-radius: 0 0 2rem 2rem;
+        box-shadow: var(--shadow-lg);
+    }
+
+    header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        font-weight: 300;
+    }
+
+    header a {
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.2);
+        border-radius: 0.5rem;
+        transition: background 0.3s ease;
+        font-weight: 500;
+    }
+
+    header a:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+    main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    article {
+        background: white;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+    }
+
+    article:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-4px);
+        border-color: var(--primary);
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        line-height: 1.3;
+    }
+
+    h2 a {
+        color: var(--text-primary);
+        text-decoration: none;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: opacity 0.3s ease;
+    }
+
+    h2 a:hover {
+        opacity: 0.8;
+    }
+
+    article p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .meta::before {
+        content: '🏷️';
+        margin-right: 0.25rem;
+    }
+
+    .content {
+        margin-top: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    .content h1, .content h2, .content h3 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .content pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        box-shadow: var(--shadow-md);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .content code {
+        background: #f4f4f4;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+        font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #e83e8c;
+    }
+
+    .content pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+    }
+
+    .content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        margin: 2rem 0;
+        box-shadow: var(--shadow-md);
+    }
+
+    .content ul, .content ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    .content li {
+        margin: 0.5rem 0;
+    }
+
+    .content blockquote {
+        border-left: 4px solid var(--primary);
+        padding-left: 1.5rem;
+        margin: 1.5rem 0;
+        color: var(--text-secondary);
+        font-style: italic;
+        background: var(--bg-secondary);
+        padding: 1rem 1.5rem;
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+
+    footer {
+        text-align: center;
+        padding: 3rem 2rem;
+        margin-top: 4rem;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+    }
+
+    footer p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        header h1 {
+            font-size: 2rem;
+        }
+
+        header p {
+            font-size: 1rem;
+        }
+
+        article {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .container {
+            padding: 1rem;
+        }
+
+        main {
+            padding: 0 1rem;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    article {
+        animation: fadeIn 0.5s ease-out;
+    }
   `;
     await fs.writeFile(path.join(ASSETS_DIR, "styles.css"), cssContent);
 
@@ -50,11 +315,11 @@ async function buildSite() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${post.title} - Chirag's Personal blog</title>
   <meta name="description" content="${post.description || ""}">
-  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/public/assets/styles.css">
 </head>
 <body>
   <header>
-    <a href="/">← Back to Home</a>
+    <a href="/index.html">← Back to Home</a>
   </header>
   <main>
     <article>
@@ -91,7 +356,7 @@ async function buildSite() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chirag's Personal blog</title>
   <meta name="description" content="A blog published by Omni-Publisher">
-  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="public/assets/styles.css">
 </head>
 <body>
   <header>
@@ -103,7 +368,7 @@ async function buildSite() {
         .map(
             (post) => `
       <article>
-        <h2><a href="/${post.slug}.html">${post.title}</a></h2>
+        <h2><a href="public/${post.slug}.html">${post.title}</a></h2>
         <p>${post.description || ""}</p>
         <div class="meta">
           ${post.tags ? `Tags: ${post.tags.join(", ")}` : ""}
@@ -120,7 +385,8 @@ async function buildSite() {
 </html>
   `;
 
-    await fs.writeFile(path.join(PUBLIC_DIR, "index.html"), indexHtml);
+    // Write index.html to root directory instead of public/
+    await fs.writeFile(path.join(process.cwd(), "index.html"), indexHtml);
 
     logger.info(`Site built successfully with ${posts.length} posts.`);
 }
