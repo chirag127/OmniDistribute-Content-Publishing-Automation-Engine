@@ -1,6 +1,6 @@
 ---
 title: "The Ultimate Guide to Automated Content Distribution with Omni-Publisher"
-description: "Learn how to automate your content workflow and publish to 17+ platforms simultaneously using Omni-Publisher. A deep dive into the architecture, adapters, and best practices."
+description: "Learn how to automate your content workflow and publish to 21 platforms simultaneously using Omni-Publisher. A deep dive into the architecture, adapters, and best practices."
 date: "2025-11-20"
 slug: "ultimate-guide-omni-publisher"
 tags: ["automation", "typescript", "content-marketing", "devops", "open-source"]
@@ -46,11 +46,12 @@ This design allows for easy extensibility. Adding a new platform is as simple as
 
 ## Supported Platforms
 
-As of late 2025, Omni-Publisher supports an impressive array of 17 platforms:
+As of late 2025, Omni-Publisher supports an impressive array of **21 platforms**:
 
 -   **Developer Communities**: Dev.to, Hashnode, Showwcase
 -   **Blogging Giants**: Medium, WordPress, Blogger, Tumblr
 -   **Headless CMS**: Ghost, Strapi, Wix, HubSpot
+-   **Social Media Link Sharing**: Telegram, Bluesky, X/Twitter, Threads, Facebook
 -   **Social & Microblogging**: LinkedIn, Mastodon, Reddit, Discord
 -   **Notes & Docs**: Notion, Telegraph
 

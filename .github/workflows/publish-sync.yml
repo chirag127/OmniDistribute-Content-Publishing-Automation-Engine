@@ -47,7 +47,7 @@ jobs:
                   WIX_API_KEY: ${{ secrets.WIX_API_KEY }}
                   WIX_SITE_ID: ${{ secrets.WIX_SITE_ID }}
                   TELEGRAPH_ACCESS_TOKEN: ${{ secrets.TELEGRAPH_ACCESS_TOKEN }}
-                  MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+                  MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
                   MASTODON_INSTANCE_URL: ${{ secrets.MASTODON_INSTANCE_URL }}
                   NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
                   NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
@@ -59,8 +59,21 @@ jobs:
                   REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
                   REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
                   REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
-                  REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}
+                  REDDIT_SUBREDDITS: ${{ secrets.REDDIT_SUBREDDITS }}
                   DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                  # Social Media Platforms
+                  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+                  BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+                  BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+                  TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+                  TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+                  TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+                  TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+                  THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+                  THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+                  FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+                  FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
 
             - name: Commit State Changes
               uses: stefanzweifel/git-auto-commit-action@v5
