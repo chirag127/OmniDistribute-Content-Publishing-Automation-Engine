@@ -1,0 +1,141 @@
+name: Verify Published Links
+
+on:
+    # Run daily at midnight UTC
+    schedule:
+        - cron: "0 0 * * *"
+
+    # Allow manual trigger
+    workflow_dispatch:
+
+jobs:
+    verify-links:
+        name: Check All Published Links
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 9.0.0
+
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run Link Verification
+              id: verify
+              continue-on-error: true
+              run: |
+                  pnpm verify-links
+                  echo "EXIT_CODE=$?" >> $GITHUB_OUTPUT
+
+            - name: Upload JSON Report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: link-verification-report-json
+                  path: link-verification-report.json
+                  retention-days: 30
+
+            - name: Upload Markdown Report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: link-verification-report-md
+                  path: link-verification-report.md
+                  retention-days: 30
+
+            - name: Read Report for Issue
+              if: steps.verify.outputs.EXIT_CODE == '1'
+              id: report
+              run: |
+                  REPORT=$(cat link-verification-report.md)
+                  # Escape for GitHub Actions
+                  REPORT="${REPORT//'%'/'%25'}"
+                  REPORT="${REPORT//$'\n'/'%0A'}"
+                  REPORT="${REPORT//$'\r'/'%0D'}"
+                  echo "CONTENT=$REPORT" >> $GITHUB_OUTPUT
+
+            - name: Check for Existing Issue
+              if: steps.verify.outputs.EXIT_CODE == '1'
+              id: existing_issue
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const issues = await github.rest.issues.listForRepo({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        labels: 'broken-links',
+                        state: 'open'
+                      });
+
+                      if (issues.data.length > 0) {
+                        return issues.data[0].number;
+                      }
+                      return null;
+
+            - name: Create or Update Issue
+              if: steps.verify.outputs.EXIT_CODE == '1'
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const issueNumber = ${{ steps.existing_issue.outputs.result }};
+                      const reportUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+                      const body = `## 🔗 Link Verification Failed
+
+                      Broken or empty links detected in \`.postmap.json\`.
+
+                      **Workflow Run:** ${reportUrl}
+
+                      ### 📋 Full Report
+
+                      Download the detailed reports from the workflow artifacts above, or view below:
+
+                      ${{ steps.report.outputs.CONTENT }}
+
+                      ---
+
+                      **Last Updated:** ${new Date().toISOString()}
+                      `;
+
+                      if (issueNumber) {
+                        // Update existing issue
+                        await github.rest.issues.createComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: issueNumber,
+                          body: `🔄 **Updated Report**\n\n${body}`
+                        });
+
+                        console.log(`Updated existing issue #${issueNumber}`);
+                      } else {
+                        // Create new issue
+                        const issue = await github.rest.issues.create({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          title: '🔗 Broken Links Detected in Published Posts',
+                          body: body,
+                          labels: ['broken-links', 'automated']
+                        });
+
+                        console.log(`Created new issue #${issue.data.number}`);
+                      }
+
+            - name: Summary
+              if: always()
+              run: |
+                  if [ "${{ steps.verify.outputs.EXIT_CODE }}" == "1" ]; then
+                    echo "⚠️ Link verification found issues. Check the reports above."
+                    exit 1
+                  else
+                    echo "✅ All links verified successfully!"
+                  fi
