@@ -7,6 +7,7 @@ export interface Post {
     tags?: string[];
     coverImage?: string;
     frontmatter: Record<string, any>;
+    publishedUrl?: string; // URL from primary publishing platform (Blogger)
 }
 
 export interface PublishResult {

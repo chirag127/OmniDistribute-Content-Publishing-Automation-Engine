@@ -13,7 +13,7 @@
 [![GitHub Issues](https://img.shields.io/github/issues/chirag127/omni-publisher9)](https://github.com/chirag127/omni-publisher9/issues)
 [![Last Commit](https://img.shields.io/github/last-commit/chirag127/omni-publisher9)](https://github.com/chirag127/omni-publisher9/commits/main)
 
-**A production-ready, batteries-included content publishing system that distributes your Markdown blog posts to 15+ platforms simultaneously.**
+**A production-ready, batteries-included content publishing system that distributes your Markdown blog posts to 20+ platforms simultaneously, including social media link sharing.**
 
 [Features](#-key-features) • [Quick Start](#-quick-start) • [API Keys Guide](#-comprehensive-api-keys--tokens-guide) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
@@ -69,10 +69,11 @@ Built with **Node.js 22**, **TypeScript**, and modern tooling, this system offer
 
 ### 🌐 Multi-Platform Publishing
 
-Publish to **15+ platforms** simultaneously, including:
+Publish to **21 platforms** simultaneously, including:
 
 -   **Developer Communities**: Dev.to, Hashnode, Showwcase
 -   **Mainstream**: Medium, WordPress.com, LinkedIn
+-   **Social Media Link Sharing**: Telegram, Bluesky, X/Twitter, Threads, Facebook
 -   **Social**: Tumblr, Mastodon, Reddit, Discord
 -   **Enterprise**: Notion, Strapi
 -   **CMS**: Blogger, Wix
@@ -132,10 +133,15 @@ GitHub Actions for:
 | 🟢 **Mastodon**      | ✅ Active      | Bearer Token       | ✅ Yes    | Any instance                              |
 | 🟢 **Notion**        | ✅ Active      | Integration Secret | ✅ Yes    | Database required                         |
 | 🟢 **Strapi**        | ✅ Active      | API Token          | ✅ Yes    | Self-hosted/cloud                         |
-| 🟢 **LinkedIn**      | ✅ Active      | OAuth 2.0          | ✅ Yes    | Personal profile                          |
-| 🟢 **Reddit**        | ✅ Active      | OAuth 2.0          | ✅ Yes    | Script app type                           |
+| 🟢 **LinkedIn**      | ✅ Active      | OAuth 2.0          | ✅ Yes    | Share blog post links                     |
+| 🟢 **Reddit**        | ✅ Active      | OAuth 2.0          | ✅ Yes    | Link submissions to subreddits            |
 | 🟢 **Discord**       | ✅ Active      | Webhook URL        | ✅ Yes    | Channel webhook                           |
 | 🟡 **Showwcase**     | ⚠️ Placeholder | API Key            | ✅ Yes    | API pending                               |
+| 🟢 **Telegram**      | ✅ Active      | Bot API Token      | ✅ Yes    | Post to channels                          |
+| 🟢 **Bluesky**       | ✅ Active      | App Password       | ✅ Yes    | AT Protocol                               |
+| 🟢 **X (Twitter)**   | ✅ Active      | OAuth 1.0a         | ✅ Yes    | 1,500 tweets/month free                   |
+| 🟢 **Threads**       | ✅ Active      | OAuth 2.0          | ✅ Yes    | Meta platform                             |
+| 🟢 **Facebook**      | ✅ Active      | Page Access Token  | ✅ Yes    | Pages API                                 |
 
 **Legend:**
 
@@ -782,6 +788,240 @@ This section provides **step-by-step instructions** for obtaining API keys and t
 **Steps to obtain (when available):**
 
 -   Check [showwcase.com/developers](https://www.showwcase.com/) for API access
+
+---
+
+### 16. 📱 Telegram Bot API Token
+
+**What it's for:** Share blog post links to Telegram channels.
+
+**Steps to obtain:**
+
+1. **Create a Telegram Bot:**
+
+    - Open Telegram and search for **@BotFather**
+    - Send `/newbot` and follow the instructions
+    - Choose a name and username for your bot
+    - **Copy the Bot Token** provided
+
+2. **Add bot to your channel:**
+
+    - Create a channel or use an existing one
+    - Add your bot as an administrator
+    - Give it permission to post messages
+
+3. **Get your Channel ID:**
+
+    - For public channels: use `@channelname` format
+    - For private channels: Forward a message from the channel to **@userinfobot** to get the numeric ID
+
+4. **Add to `.env`:**
+    ```env
+    TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+    TELEGRAM_CHANNEL_ID=@yourchannel
+    ```
+
+**📖 Documentation:** [core.telegram.org/bots/api](https://core.telegram.org/bots/api)
+
+**⚠️ Notes:**
+
+-   Free tier allows 30 messages per second
+-   Bot can post to multiple channels
+-   Supports Markdown formatting
+
+---
+
+### 17. 🦋 Bluesky App Password
+
+**What it's for:** Share blog post links to Bluesky social network via AT Protocol.
+
+**Steps to obtain:**
+
+1. **Create a Bluesky account** at [bsky.app](https://bsky.app) (if you don't have one)
+
+2. **Generate App Password:**
+
+    - Log in to your Bluesky account
+    - Go to **Settings** → **App Passwords**
+    - Click **"Add App Password"**
+    - Name it (e.g., "Omni-Publisher")
+    - Click **"Create App Password"**
+    - **Copy the generated password immediately** (shown only once)
+
+3. **Add to `.env`:**
+    ```env
+    BLUESKY_HANDLE=yourname.bsky.social
+    BLUESKY_APP_PASSWORD=your-app-password-here
+    ```
+
+**📖 Documentation:** [docs.bsky.app](https://docs.bsky.app/)
+
+**⚠️ Notes:**
+
+-   App passwords are safer than using your main password
+-   Rate limit: 3000 points per 5 minutes (creating posts = 3 points each)
+-   Supports rich text and link embedding
+
+---
+
+### 18. 🐦 X (Twitter) API Credentials
+
+**What it's for:** Share blog post links as tweets on X/Twitter.
+
+**Steps to obtain:**
+
+1. **Apply for Developer Account:**
+
+    - Go to [developer.twitter.com](https://developer.twitter.com/)
+    - Click **"Sign up"** and complete the application
+    - Describe your use case (e.g., "Automated blog post sharing")
+    - Wait for approval (usually instant for basic access)
+
+2. **Create a Project and App:**
+
+    - In the Developer Portal, click **"Create Project"**
+    - Name your project
+    - Click **"Create App"** within the project
+    - Name your app (e.g., "Omni-Publisher")
+
+3. **Set App Permissions:**
+
+    - Go to your app's settings
+    - Click **"User authentication settings"** → **"Set up"**
+    - App permissions: **"Read and write"**
+    - Type of App: **"Web App, Automated App or Bot"**
+    - Save changes
+
+4. **Generate API Keys:**
+
+    - Go to **"Keys and tokens"** tab
+    - Under **"Consumer Keys"**, click **"Generate"** (if not already generated)
+    - Copy **API Key** and **API Key Secret**
+    - Under **"Authentication Tokens"**, click **"Generate"**
+    - Copy **Access Token** and **Access Token Secret**
+
+5. **Add to `.env`:**
+    ```env
+    TWITTER_API_KEY=your_api_key
+    TWITTER_API_SECRET=your_api_secret
+    TWITTER_ACCESS_TOKEN=your_access_token
+    TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
+    ```
+
+**📖 Documentation:** [developer.twitter.com/en/docs/twitter-api](https://developer.twitter.com/en/docs/twitter-api)
+
+**⚠️ Notes:**
+
+-   **Free Tier Limits:** 1,500 tweets per month (~50 per day)
+-   Uses OAuth 1.0a for authentication
+-   Character limit: 280 characters including link
+
+---
+
+### 19. 🧵 Threads Access Token (Meta)
+
+**What it's for:** Share blog post links to Meta's Threads platform.
+
+**Steps to obtain:**
+
+1. **Prerequisites:**
+
+    - Have a Facebook Page (create one if needed)
+    - Link your Threads account to this Facebook Page
+
+2. **Create a Facebook App:**
+
+    - Go to [developers.facebook.com](https://developers.facebook.com/)
+    - Click **"My Apps"** → **"Create App"**
+    - Choose app type: **"Business"**
+    - Fill in app details and create
+
+3. **Add Threads API Product:**
+
+    - In your app dashboard, click **"Add Product"**
+    - Find **"Threads API"** and click **"Set Up"**
+
+4. **Get Access Token:**
+
+    - Use **Meta's Graph API Explorer** or implement OAuth flow
+    - Request permissions: `threads_basic`, `threads_content_publish`
+    - Generate a **User Access Token**
+
+5. **Get Threads User ID:**
+
+    - Use Graph API to get your Threads User ID
+    - Call: `GET https://graph.threads.net/v1.0/me?fields=id&access_token=YOUR_TOKEN`
+
+6. **Add to `.env`:**
+    ```env
+    THREADS_ACCESS_TOKEN=your_access_token
+    THREADS_USER_ID=your_threads_user_id
+    ```
+
+**📖 Documentation:** [developers.facebook.com/docs/threads](https://developers.facebook.com/docs/threads)
+
+**⚠️ Notes:**
+
+-   **Free Tier Limits:** 250 posts per day per user
+-   Character limit: 500 characters
+-   Requires Facebook Page connection
+
+---
+
+### 20. 📘 Facebook Pages Access Token
+
+**What it's for:** Share blog post links to Facebook Pages.
+
+**Steps to obtain:**
+
+1. **Create a Facebook Page** (if you don't have one):
+
+    - Go to [facebook.com/pages/create](https://www.facebook.com/pages/create)
+    - Follow the setup wizard
+
+2. **Create a Facebook App:**
+
+    - Visit [developers.facebook.com](https://developers.facebook.com/)
+    - Click **"Create App"** → Choose **"Business"** type
+    - Fill in app details
+
+3. **Add Facebook Login Product:**
+
+    - In app dashboard, add **"Facebook Login"** product
+    - Configure OAuth redirect URIs if needed
+
+4. **Get Page Access Token:**
+
+    - Use **Graph API Explorer** ([developers.facebook.com/tools/explorer](https://developers.facebook.com/tools/explorer))
+    - Select your app
+    - Get User Access Token with permissions:
+        - `pages_manage_posts`
+        - `pages_read_engagement`
+        - `pages_show_list`
+    - Click **"Generate Access Token"** and authorize
+    - Get Page Access Token:
+        - Call `GET /{user-id}/accounts` endpoint
+        - Find your page and copy its `access_token`
+
+5. **Get Page ID:**
+
+    - Go to your Facebook Page
+    - Click **"About"**
+    - Scroll down to find **Page ID** (or look in URL)
+
+6. **Add to `.env`:**
+    ```env
+    FACEBOOK_PAGE_ACCESS_TOKEN=your_page_access_token
+    FACEBOOK_PAGE_ID=your_page_id
+    ```
+
+**📖 Documentation:** [developers.facebook.com/docs/pages-api](https://developers.facebook.com/docs/pages-api)
+
+**⚠️ Notes:**
+
+-   Page Access Tokens can be set to never expire
+-   Requires app review for public use
+-   Free tier available with standard rate limits
 
 ---
 

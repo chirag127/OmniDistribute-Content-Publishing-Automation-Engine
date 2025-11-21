@@ -3,13 +3,18 @@ import { Adapter, Post, PublishResult } from "../types.js";
 import { logger } from "../utils/logger.js";
 import { formatSocialPost } from "../utils/message-template.js";
 
-export class MastodonAdapter implements Adapter {
-    name = "mastodon";
+export class FacebookAdapter implements Adapter {
+    name = "facebook";
     enabled = true;
 
     async validate(): Promise<boolean> {
-        if (!process.env.MASTODON_TOKEN || !process.env.MASTODON_INSTANCE_URL) {
-            logger.warn("MASTODON_TOKEN or MASTODON_INSTANCE_URL is missing");
+        if (
+            !process.env.FACEBOOK_PAGE_ACCESS_TOKEN ||
+            !process.env.FACEBOOK_PAGE_ID
+        ) {
+            logger.warn(
+                "FACEBOOK_PAGE_ACCESS_TOKEN or FACEBOOK_PAGE_ID is missing"
+            );
             return false;
         }
         return true;
@@ -19,7 +24,7 @@ export class MastodonAdapter implements Adapter {
         try {
             if (!post.publishedUrl) {
                 logger.warn(
-                    "No publishedUrl available for Mastodon posting. Skipping."
+                    "No publishedUrl available for Facebook posting. Skipping."
                 );
                 return {
                     platform: this.name,
@@ -28,34 +33,36 @@ export class MastodonAdapter implements Adapter {
                 };
             }
 
-            // Mastodon has 500 character limit
-            const { message } = formatSocialPost(post, 500);
+            const { message } = formatSocialPost(post, 5000); // Facebook has generous limit
 
             const response = await axios.post(
-                `${process.env.MASTODON_INSTANCE_URL}/api/v1/statuses`,
+                `https://graph.facebook.com/v18.0/${process.env.FACEBOOK_PAGE_ID}/feed`,
                 {
-                    status: message,
-                    visibility: "public",
+                    message: message,
+                    link: post.publishedUrl,
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${process.env.MASTODON_TOKEN}`,
+                        Authorization: `Bearer ${process.env.FACEBOOK_PAGE_ACCESS_TOKEN}`,
                         "Content-Type": "application/json",
                     },
                 }
             );
 
+            const postId = response.data.id;
+            const postUrl = `https://www.facebook.com/${postId}`;
+
             return {
                 platform: this.name,
                 success: true,
-                url: response.data.url,
-                postId: response.data.id,
+                url: postUrl,
+                postId: postId,
             };
         } catch (error: any) {
             return {
                 platform: this.name,
                 success: false,
-                error: error.response?.data?.error || error.message,
+                error: error.response?.data?.error?.message || error.message,
             };
         }
     }

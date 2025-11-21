@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Adapter, Post, PublishResult } from "../types.js";
 import { logger } from "../utils/logger.js";
+import { formatSocialPost } from "../utils/message-template.js";
 
 export class DiscordAdapter implements Adapter {
     name = "discord";
@@ -16,15 +17,22 @@ export class DiscordAdapter implements Adapter {
 
     async publish(post: Post): Promise<PublishResult> {
         try {
-            // Discord webhook limit is 2000 chars.
-            // We'll post title + description + link (if available) or just a summary.
+            if (!post.publishedUrl) {
+                logger.warn(
+                    "No publishedUrl available for Discord posting. Skipping."
+                );
+                return {
+                    platform: this.name,
+                    success: false,
+                    error: "No Blogger URL available to share",
+                };
+            }
 
-            const content = `**${post.title}**\n\n${
-                post.description || ""
-            }\n\n${post.tags?.map((t) => `#${t}`).join(" ") || ""}`;
+            // Discord webhook limit is 2000 chars
+            const { message } = formatSocialPost(post, 2000);
 
             await axios.post(process.env.DISCORD_WEBHOOK_URL!, {
-                content: content.substring(0, 2000),
+                content: message,
             });
 
             return {

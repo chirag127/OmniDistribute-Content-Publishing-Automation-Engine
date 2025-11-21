@@ -35,6 +35,13 @@ import { RedditAdapter } from "./adapters/reddit.js";
 import { DiscordAdapter } from "./adapters/discord.js";
 import { ShowwcaseAdapter } from "./adapters/showwcase.js";
 
+// Social Media Link Sharing Adapters
+import { TelegramAdapter } from "./adapters/telegram.js";
+import { BlueskyAdapter } from "./adapters/bluesky.js";
+import { TwitterAdapter } from "./adapters/twitter.js";
+import { ThreadsAdapter } from "./adapters/threads.js";
+import { FacebookAdapter } from "./adapters/facebook.js";
+
 const ADAPTERS: Adapter[] = [
     new DevToAdapter(),
     new HashnodeAdapter(),
@@ -51,6 +58,12 @@ const ADAPTERS: Adapter[] = [
     new RedditAdapter(),
     new DiscordAdapter(),
     new ShowwcaseAdapter(),
+    // Social Media Link Sharing Adapters
+    new TelegramAdapter(),
+    new BlueskyAdapter(),
+    new TwitterAdapter(),
+    new ThreadsAdapter(),
+    new FacebookAdapter(),
 ];
 
 async function getPosts(postsDir: string): Promise<Post[]> {
@@ -111,7 +124,64 @@ async function main() {
 
         logger.info(`Processing post: ${post.title} (${post.slug})`);
 
-        const publishPromises = enabledAdapters.map(async (adapter) => {
+        // STEP 1: Publish to Blogger FIRST (primary platform)
+        const bloggerAdapter = enabledAdapters.find(
+            (a) => a.name === "blogger"
+        );
+        if (bloggerAdapter && !dryRun) {
+            if (!force && isPublished(state, post.slug!, "blogger")) {
+                logger.info(
+                    `Post ${post.slug} already published to Blogger, using existing URL`
+                );
+                // Retrieve existing URL from state
+                post.publishedUrl = state[post.slug!]?.["blogger"];
+            } else {
+                logger.info(`Publishing to Blogger first...`);
+                try {
+                    const bloggerResult = await bloggerAdapter.publish(post);
+                    if (bloggerResult.success && bloggerResult.url) {
+                        post.publishedUrl = bloggerResult.url;
+                        logPublishSuccess(
+                            "blogger",
+                            post.slug!,
+                            bloggerResult.url
+                        );
+                        updatePostState(
+                            state,
+                            post.slug!,
+                            "blogger",
+                            bloggerResult.url,
+                            bloggerResult.postId
+                        );
+                        await saveState(state); // Save immediately after Blogger
+                        logger.info(
+                            `✅ Blogger URL obtained: ${bloggerResult.url}`
+                        );
+                    } else {
+                        logPublishFailure(
+                            "blogger",
+                            post.slug!,
+                            bloggerResult.error
+                        );
+                        logger.warn(
+                            `⚠️ Blogger publishing failed. Social media adapters will not have a link to share.`
+                        );
+                    }
+                } catch (error: any) {
+                    logPublishFailure("blogger", post.slug!, error);
+                    logger.warn(
+                        `⚠️ Blogger publishing failed. Social media adapters will not have a link to share.`
+                    );
+                }
+            }
+        }
+
+        // STEP 2: Publish to all OTHER adapters (in parallel) with Blogger URL available
+        const otherAdapters = enabledAdapters.filter(
+            (a) => a.name !== "blogger"
+        );
+
+        const publishPromises = otherAdapters.map(async (adapter) => {
             // Check if already published
             if (!force && isPublished(state, post.slug!, adapter.name)) {
                 logger.info(

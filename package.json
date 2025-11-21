@@ -1,7 +1,7 @@
 {
   "name": "omni-publisher-ecosystem",
   "version": "1.0.0",
-  "description": "A production-ready content ecosystem for publishing to 17 platforms.",
+  "description": "A production-ready content ecosystem for publishing to 21 platforms, including social media link sharing.",
   "main": "dist/publish.js",
   "packageManager": "pnpm@9.0.0",
   "engines": {

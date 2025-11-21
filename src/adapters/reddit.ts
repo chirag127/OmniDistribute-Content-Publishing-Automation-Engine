@@ -12,9 +12,9 @@ export class RedditAdapter implements Adapter {
             !process.env.REDDIT_CLIENT_SECRET ||
             !process.env.REDDIT_USERNAME ||
             !process.env.REDDIT_PASSWORD ||
-            !process.env.REDDIT_SUBREDDIT
+            !process.env.REDDIT_SUBREDDITS
         ) {
-            logger.warn("REDDIT credentials or SUBREDDIT missing");
+            logger.warn("REDDIT credentials or SUBREDDITS missing");
             return false;
         }
         return true;
@@ -22,6 +22,17 @@ export class RedditAdapter implements Adapter {
 
     async publish(post: Post): Promise<PublishResult> {
         try {
+            if (!post.publishedUrl) {
+                logger.warn(
+                    "No publishedUrl available for Reddit posting. Skipping."
+                );
+                return {
+                    platform: this.name,
+                    success: false,
+                    error: "No Blogger URL available to share",
+                };
+            }
+
             // 1. Get Access Token
             const auth = Buffer.from(
                 `${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`
@@ -40,14 +51,19 @@ export class RedditAdapter implements Adapter {
 
             const accessToken = tokenResponse.data.access_token;
 
-            // 2. Submit Post
+            // 2. Submit Link to first subreddit (or all if needed)
+            const subreddits = process.env
+                .REDDIT_SUBREDDITS!.split(",")
+                .map((s) => s.trim());
+            const firstSubreddit = subreddits[0];
+
             const response = await axios.post(
                 "https://oauth.reddit.com/api/submit",
                 new URLSearchParams({
-                    sr: process.env.REDDIT_SUBREDDIT!,
+                    sr: firstSubreddit,
                     title: post.title,
-                    text: post.content, // Reddit supports markdown
-                    kind: "self",
+                    url: post.publishedUrl, // LINK submission
+                    kind: "link",
                 }).toString(),
                 {
                     headers: {
@@ -58,16 +74,21 @@ export class RedditAdapter implements Adapter {
                 }
             );
 
-            if (!response.data.success) {
-                // Reddit API returns 200 even on failure sometimes, check json response
-                // Actually, the response structure is complex.
+            // Extract URL from response
+            let postUrl = "";
+            if (
+                response.data &&
+                response.data.json &&
+                response.data.json.data
+            ) {
+                postUrl = response.data.json.data.url || "";
             }
 
             return {
                 platform: this.name,
                 success: true,
-                url: response.data.jquery ? "Check Reddit" : "", // URL construction is hard without parsing response deeply
-                postId: "", // ID is in the response structure
+                url: postUrl,
+                postId: response.data.json?.data?.id || "",
             };
         } catch (error: any) {
             return {
