@@ -235,6 +235,33 @@ See [`.env.example`](.env.example) for the complete list with detailed comments.
 
 ---
 
+## 🔐 Setting up GitHub Secrets
+
+To enable the GitHub Actions workflows (like daily publishing), you need to add your environment variables to your GitHub repository's secrets.
+
+### The Easiest Way (Recommended)
+
+If you have the [GitHub CLI](https://cli.github.com/) installed, you can import your local `.env` file directly:
+
+```bash
+# 1. Login to GitHub CLI (if not already logged in)
+gh auth login
+
+# 2. Bulk import all secrets from your .env file
+gh secret set -f .env
+```
+
+### Manual Method
+
+1. Go to your repository on GitHub.
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**.
+3. Click **"New repository secret"**.
+4. Add each variable from your `.env` file (e.g., `DEVTO_API_KEY`, `HASHNODE_TOKEN`).
+
+> **Note:** Ensure your `.env` file is populated with valid keys before importing.
+
+---
+
 ## 🔑 Comprehensive API Keys & Tokens Guide
 
 This section provides **step-by-step instructions** for obtaining API keys and tokens for every supported platform. Follow the guides below to configure your publishing ecosystem.
