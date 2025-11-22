@@ -28,25 +28,25 @@
   "author": "Omni-Bot",
   "license": "MIT",
   "dependencies": {
-    "@hubspot/api-client": "^11.0.0",
-    "@notionhq/client": "^2.2.15",
-    "@tryghost/admin-api": "^1.13.8",
-    "axios": "^1.7.7",
+    "@hubspot/api-client": "^13.4.0",
+    "@notionhq/client": "^5.4.0",
+    "@tryghost/admin-api": "^1.14.2",
+    "axios": "^1.13.2",
     "dotenv": "^16.4.5",
-    "googleapis": "^144.0.0",
+    "googleapis": "^166.0.0",
     "gray-matter": "^4.0.3",
-    "marked": "^14.1.1",
+    "marked": "^17.0.1",
     "oauth-1.0a": "^2.2.6",
-    "simple-oauth2": "^5.0.0",
-    "winston": "^3.14.2"
+    "simple-oauth2": "^5.1.0",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.2",
-    "@types/node": "^22.5.5",
+    "@biomejs/biome": "^2.3.7",
+    "@types/node": "^24.10.1",
     "@types/oauth": "^0.9.4",
     "@types/simple-oauth2": "^5.0.7",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.9.3"
   }
 }

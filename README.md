@@ -7,17 +7,6 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-22%2B-brightgreen)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-latest-orange)](https://pnpm.io)
-[![GitHub Stars](https://img.shields.io/github/stars/chirag127/omni-publisher9?style=social)](https://github.com/chirag127/omni-publisher9/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/chirag127/omni-publisher9?style=social)](https://github.com/chirag127/omni-publisher9/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/chirag127/omni-publisher9)](https://github.com/chirag127/omni-publisher9/issues)
-[![Last Commit](https://img.shields.io/github/last-commit/chirag127/omni-publisher9)](https://github.com/chirag127/omni-publisher9/commits/main)
-
-**A production-ready, batteries-included content publishing system that distributes your Markdown blog posts to 20+ platforms simultaneously, including social media link sharing.**
-
-[Features](#-key-features) • [Quick Start](#-quick-start) • [API Keys Guide](#-comprehensive-api-keys--tokens-guide) • [Documentation](#-documentation) • [Contributing](#-contributing)
-
-</div>
 
 ---
 
@@ -742,6 +731,7 @@ _Required if you want to distribute this tool to other users._
 
 -   Access token expires after 60 days
 -   Requires verified LinkedIn app
+-   **API Version:** Adapter uses `202510` version header automatically.
 
 ---
 
