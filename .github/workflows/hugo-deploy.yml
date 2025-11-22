@@ -8,6 +8,9 @@ on:
             - "content/**"
             - "hugo.yaml"
             - "themes/**"
+            - "layouts/**"
+            - "assets/**"
+            - "static/**"
             - ".github/workflows/hugo-deploy.yml"
     workflow_dispatch:
 
@@ -31,19 +34,27 @@ jobs:
     build:
         runs-on: ubuntu-latest
         env:
-            HUGO_VERSION: 0.138.0
+            HUGO_VERSION: 0.152.2 # Latest Hugo version as of Nov 2025
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
                   submodules: recursive
-                  fetch-depth: 0
+                  fetch-depth: 0 # Full history for .GitInfo and .Lastmod
 
             - name: Setup Hugo
               uses: peaceiris/actions-hugo@v3
               with:
                   hugo-version: "${{ env.HUGO_VERSION }}"
                   extended: true
+
+            - name: Cache Hugo resources
+              uses: actions/cache@v4
+              with:
+                  path: resources
+                  key: ${{ runner.os }}-hugo-resources-${{ hashFiles('**/hugo.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-hugo-resources-
 
             - name: Setup Pages
               id: pages
@@ -57,6 +68,20 @@ jobs:
                   hugo \
                     --minify \
                     --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+            - name: Verify build output
+              run: |
+                  if [ ! -f public/index.html ]; then
+                    echo "❌ Build failed: index.html not found"
+                    exit 1
+                  fi
+                  if [ ! -f public/sitemap.xml ]; then
+                    echo "⚠️  Warning: sitemap.xml not found"
+                  fi
+                  echo "✅ Build verification passed"
+                  echo "📊 Build statistics:"
+                  find public -type f | wc -l | xargs echo "Total files:"
+                  du -sh public | awk '{print "Total size: " $1}'
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3

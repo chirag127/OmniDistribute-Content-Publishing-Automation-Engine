@@ -1,0 +1,10 @@
+{{- /* Extended head - Add custom meta tags, analytics, etc. */ -}} {{- /*
+Schema.org structured data */ -}} {{ partial "schema.html" . }} {{- /*
+Additional SEO meta tags */ -}} <meta name="author" content="{{
+.Site.Params.author | default "Chirag Singhal" }}">
+<meta name="robots" content="index, follow" />
+
+{{- if .IsPage -}}
+<link rel="canonical" href="{{ .Permalink }}" />
+{{- end -}} {{- /* Favicon (placeholder - replace with actual favicon) */ -}}
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />

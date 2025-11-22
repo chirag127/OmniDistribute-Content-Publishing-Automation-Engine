@@ -3,6 +3,12 @@ languageCode: en-us
 title: Chirag Personal Blog
 theme: PaperMod
 
+# Hugo version constraint
+module:
+    hugoVersion:
+        extended: true
+        min: "0.138.0"
+
 # Enable emoji support
 enableEmoji: true
 
@@ -10,11 +16,51 @@ enableEmoji: true
 enableGitInfo: true
 
 # Pagination
-paginate: 10
+pagination:
+    pagerSize: 10
+
+# Default content language
+defaultContentLanguage: en
+
+# Taxonomies
+taxonomies:
+    tag: tags
+    category: categories
+
+# Language configuration
+languages:
+    en:
+        languageName: "English"
+        weight: 1
+        params:
+            subtitle: "Tech, Finance & Productivity Insights"
+        menu:
+            main:
+                - identifier: posts
+                  name: Posts
+                  url: /posts/
+                  weight: 10
+                - identifier: tags
+                  name: Tags
+                  url: /tags/
+                  weight: 20
+                - identifier: archives
+                  name: Archives
+                  url: /archives/
+                  weight: 25
+                - identifier: search
+                  name: Search
+                  url: /search/
+                  weight: 30
+                - identifier: about
+                  name: About
+                  url: /about/
+                  weight: 40
 
 # Build configuration
 build:
     writeStats: true
+    useResourceCacheWhen: "fallback"
 
 # Minification
 minify:
@@ -28,27 +74,58 @@ outputs:
         - RSS
         - JSON
 
-# Menu configuration
-menu:
-    main:
-        - identifier: posts
-          name: Posts
-          url: /posts/
-          weight: 10
-        - identifier: tags
-          name: Tags
-          url: /tags/
-          weight: 20
-        - identifier: search
-          name: Search
-          url: /search/
-          weight: 30
+# RSS configuration
+rss:
+    limit: 20
+
+# Image processing configuration
+imaging:
+    resampleFilter: "Lanczos"
+    quality: 85
+    anchor: "Smart"
+
+# Caching for faster rebuilds
+caches:
+    images:
+        dir: ":resourceDir/_gen"
+        maxAge: "720h"
+    assets:
+        dir: ":resourceDir/_gen"
+        maxAge: "720h"
+
+# Security configuration
+security:
+    enableInlineShortcodes: false # Prevent arbitrary code execution
+    exec:
+        allow:
+            - "^git$"
+            - "^go$"
+            - "^npx$"
+            - "^postcss$"
+        osEnv:
+            - "^HUGO_"
+            - "^CI"
+    funcs:
+        getenv:
+            - "^HUGO_"
+            - "^CI"
+    http:
+        methods:
+            - "GET"
+        urls:
+            - ".*" # Can be restricted to specific domains if needed
 
 # PaperMod theme parameters
 params:
     env: production
     title: Chirag Personal Blog
     description: "Personal blog covering tech, finance, and productivity"
+    keywords:
+        - tech blog
+        - personal finance India
+        - AI tools
+        - productivity
+        - software engineering
     author: Chirag Singhal
 
     # Date format
@@ -62,6 +139,9 @@ params:
     ShowCodeCopyButtons: true
     ShowWordCount: true
     ShowRssButtonInSectionTermList: true
+    ShowAllPagesInArchive: true
+    ShowPageNums: true
+    ShowToc: true
     UseHugoToc: true
     disableSpecial1stPost: false
     disableScrollToTop: false
@@ -70,6 +150,12 @@ params:
     hideSummary: false
     showtoc: true
     tocopen: false
+
+    # Cover images configuration
+    cover:
+        linkFullImages: true
+        responsiveImages: true
+        hidden: false
 
     # Social icons
     socialIcons:
@@ -103,9 +189,15 @@ params:
 markup:
     goldmark:
         renderer:
-            unsafe: true
+            unsafe: false # SECURITY: Disabled for safety - use Hugo shortcodes instead
     highlight:
         noClasses: false
         style: monokai
         lineNos: true
         lineNumbersInTable: true
+        anchorLineNos: false
+        codeFences: true
+        guessSyntax: false
+        hl_Lines: ""
+        lineNoStart: 1
+        tabWidth: 4
