@@ -48,6 +48,7 @@ import { NeocitiesAdapter } from "./adapters/neocities.js";
 import { CodebergAdapter } from "./adapters/codeberg.js";
 import { GistAdapter } from "./adapters/gist.js";
 import { PastebinAdapter } from "./adapters/pastebin.js";
+import { EdgeOneAdapter } from "./adapters/edgeone.js";
 
 import { BlueskyAdapter } from "./adapters/bluesky.js";
 import { FacebookAdapter } from "./adapters/facebook.js";
@@ -85,6 +86,7 @@ const ADAPTERS: Adapter[] = [
     new CodebergAdapter(),
     new GistAdapter(),
     new PastebinAdapter(),
+    new EdgeOneAdapter(),
     // Social Media Link Sharing Adapters
     new TelegramAdapter(),
     new BlueskyAdapter(),

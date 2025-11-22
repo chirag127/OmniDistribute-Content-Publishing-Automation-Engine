@@ -108,6 +108,7 @@ jobs:
                   CODEBERG_REPO: ${{ secrets.CODEBERG_REPO }}
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   PASTEBIN_API_KEY: ${{ secrets.PASTEBIN_API_KEY }}
+                  EDGEONE_TOKEN: ${{ secrets.EDGEONE_TOKEN }}
 
             - name: Commit State Changes
               uses: stefanzweifel/git-auto-commit-action@v5
