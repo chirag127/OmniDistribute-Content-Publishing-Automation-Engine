@@ -35,8 +35,11 @@ import { TelegraphAdapter } from "./adapters/telegraph.js";
 import { TumblrAdapter } from "./adapters/tumblr.js";
 import { WixAdapter } from "./adapters/wix.js";
 import { WordPressAdapter } from "./adapters/wordpress.js";
-import { WriteAsAdapter } from "./adapters/writeas.js";
+
 import { LiveJournalAdapter } from "./adapters/livejournal.js";
+import { VKAdapter } from "./adapters/vk.js";
+import { WeiboAdapter } from "./adapters/weibo.js";
+import { PixnetAdapter } from "./adapters/pixnet.js";
 
 import { BlueskyAdapter } from "./adapters/bluesky.js";
 import { FacebookAdapter } from "./adapters/facebook.js";
@@ -61,8 +64,11 @@ const ADAPTERS: Adapter[] = [
     new RedditAdapter(),
     new DiscordAdapter(),
     new ShowwcaseAdapter(),
-    new WriteAsAdapter(),
+
     new LiveJournalAdapter(),
+    new VKAdapter(),
+    new WeiboAdapter(),
+    new PixnetAdapter(),
     // Social Media Link Sharing Adapters
     new TelegramAdapter(),
     new BlueskyAdapter(),
