@@ -119,6 +119,7 @@ jobs:
 
             - name: Deploy to Netlify
               uses: nwtgck/actions-netlify@v3.0
+              continue-on-error: true
               with:
                   publish-dir: "./public"
                   production-branch: main
@@ -145,6 +146,7 @@ jobs:
 
             - name: Deploy to Vercel
               uses: amondnet/vercel-action@v25
+              continue-on-error: true
               with:
                   vercel-token: ${{ secrets.VERCEL_TOKEN }}
                   vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -168,6 +170,7 @@ jobs:
 
             - name: Deploy to Cloudflare Pages
               uses: cloudflare/pages-action@v1
+              continue-on-error: true
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -188,6 +191,7 @@ jobs:
 
             - name: Deploy to Firebase Hosting
               uses: FirebaseExtended/action-hosting-deploy@v0
+              continue-on-error: true
               with:
                   repoToken: "${{ secrets.GITHUB_TOKEN }}"
                   firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
@@ -207,6 +211,7 @@ jobs:
 
             - name: Deploy to Azure Static Web Apps
               uses: Azure/static-web-apps-deploy@v1
+              continue-on-error: true
               with:
                   azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -222,6 +227,7 @@ jobs:
             - name: Deploy to Render
               # Render deployments are triggered via a Deploy Hook URL, not a direct artifact upload
               # This step assumes the user has connected their repo to Render as a Static Site
+              continue-on-error: true
               run: |
                   if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
                     curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
@@ -244,6 +250,7 @@ jobs:
               run: npm install --global surge
 
             - name: Deploy to Surge
+              continue-on-error: true
               run: surge ./public ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
 
     deploy-digitalocean:
@@ -258,6 +265,7 @@ jobs:
               with:
                   token: ${{ secrets.DOCTL_TOKEN }}
             - name: Create Deployment
+              continue-on-error: true
               run: |
                   if [ -n "${{ secrets.DO_APP_ID }}" ]; then
                     doctl apps create-deployment ${{ secrets.DO_APP_ID }} --force-rebuild
@@ -289,6 +297,7 @@ jobs:
               env:
                   FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
                   FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
+              continue-on-error: true
               run: |
                   if [ -n "$FLEEK_TOKEN" ]; then
                     # Deploy the public folder directly to Fleek

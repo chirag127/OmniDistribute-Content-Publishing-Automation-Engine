@@ -194,25 +194,24 @@ async function main() {
     // STEP 2: Publish to all OTHER adapters (in parallel) with Blogger URL available
     const otherAdapters = enabledAdapters.filter((a) => a.name !== "blogger");
 
-    const publishPromises = otherAdapters.map(async (adapter) => {
-      const currentState = getPostState(state, post.slug!, adapter.name);
+import { retry } from "./utils/retry.js";
 
-      if (dryRun) {
-        logger.info(`[Dry Run] Would publish/update ${post.slug} to ${adapter.name}`);
-        return {
-          platform: adapter.name,
-          success: true,
-          dryRun: true,
-        } as PublishResult;
-      }
+// ... (imports)
 
+// Inside main function loops:
+
+    // ... inside the loop for otherAdapters ...
       // Check if already published
       if (!force && currentState) {
         // Check for updates
         if (currentState.contentHash !== contentHash && adapter.update && currentState.postId) {
           logger.info(`Updating post ${post.slug} on ${adapter.name}...`);
           try {
-            const result = await adapter.update(post, currentState.postId);
+            const result = await retry(() => adapter.update!(post, currentState.postId!), {
+                retries: 3,
+                onRetry: (err, attempt) => logger.warn(`Update attempt ${attempt} failed for ${adapter.name}: ${err.message}`)
+            });
+
             if (result.success) {
               logPublishSuccess(adapter.name, post.slug!, result.url || currentState.url);
               updatePostState(
@@ -247,7 +246,19 @@ async function main() {
 
       // Publish New
       try {
-        const result = await adapter.publish(post);
+        const result = await retry(async () => {
+            const res = await adapter.publish(post);
+            if (!res.success) {
+                // Throwing ensures retry triggers.
+                // We attach the original error message to be logged by retry utility.
+                throw new Error(res.error || "Unknown error during publish");
+            }
+            return res;
+        }, {
+            retries: 3,
+            onRetry: (err, attempt) => logger.warn(`Publish attempt ${attempt} failed for ${adapter.name}: ${err.message}`)
+        });
+
         if (result.success) {
           logPublishSuccess(adapter.name, post.slug!, result.url || "");
           updatePostState(
@@ -259,6 +270,9 @@ async function main() {
             contentHash,
           );
         } else {
+            // This block might be unreachable now if we throw on failure,
+            // BUT retry() re-throws the last error if all retries fail.
+            // So the catch block below will handle the final failure.
           logPublishFailure(adapter.name, post.slug!, result.error);
         }
         return result;

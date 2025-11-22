@@ -199,3 +199,4 @@ link-verification-report.md
 public/
 resources/
 .hugo_build.lock
+.vercel

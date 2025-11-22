@@ -52,6 +52,10 @@ function sleep(ms: number): Promise<void> {
 /**
  * Check if a URL is valid and accessible
  */
+import { retry } from "./utils/retry.js";
+
+// ...
+
 async function checkUrl(url: string): Promise<LinkCheckResult> {
     if (!url || url.trim() === "") {
         return {
@@ -60,74 +64,112 @@ async function checkUrl(url: string): Promise<LinkCheckResult> {
         };
     }
 
-    try {
-        // Use HEAD request first for efficiency
-        const response = await axios.head(url, {
-            timeout: REQUEST_TIMEOUT,
-            maxRedirects: 5,
-            validateStatus: (status) => status < 500, // Don't throw on 4xx errors
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            },
-        });
+    return retry(
+        async () => {
+            try {
+                // Use HEAD request first for efficiency
+                const response = await axios.head(url, {
+                    timeout: REQUEST_TIMEOUT,
+                    maxRedirects: 5,
+                    validateStatus: (status) => status < 500, // Don't throw on 4xx errors
+                    headers: {
+                        "User-Agent":
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    },
+                });
 
-        // Success codes: 2xx and 3xx redirects
-        if (response.status >= 200 && response.status < 400) {
-            return {
-                url,
-                status: "success",
-                statusCode: response.status,
-            };
-        }
+                // Success codes: 2xx and 3xx redirects
+                if (response.status >= 200 && response.status < 400) {
+                    return {
+                        url,
+                        status: "success",
+                        statusCode: response.status,
+                    };
+                }
 
-        // Client/Server errors
-        return {
-            url,
-            status: "broken",
-            statusCode: response.status,
-            error: `HTTP ${response.status}`,
-        };
-    } catch (error) {
-        // If HEAD fails, try GET (some servers don't support HEAD)
-        try {
-            const response = await axios.get(url, {
-                timeout: REQUEST_TIMEOUT,
-                maxRedirects: 5,
-                validateStatus: (status) => status < 500,
-                headers: {
-                    "User-Agent":
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                },
-            });
+                // Client/Server errors - Do NOT retry 4xx, but retry 5xx (though validateStatus handles <500, axios throws on >=500?)
+                // Wait, validateStatus: status < 500 means it resolves for 404 but throws for 500.
+                // So 500s will be caught by catch block and retried.
+                // 404s will return here.
 
-            if (response.status >= 200 && response.status < 400) {
                 return {
                     url,
-                    status: "success",
+                    status: "broken",
                     statusCode: response.status,
+                    error: `HTTP ${response.status}`,
                 };
+            } catch (error) {
+                // If HEAD fails, try GET (some servers don't support HEAD)
+                // We nest this try-catch to handle the fallback logic, but if GET also fails (throws),
+                // we want to propagate it if it's a network error so retry() can handle it.
+                // But wait, if it's a 404 on GET, we don't want to retry.
+
+                try {
+                    const response = await axios.get(url, {
+                        timeout: REQUEST_TIMEOUT,
+                        maxRedirects: 5,
+                        validateStatus: (status) => status < 500,
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                        },
+                    });
+
+                    if (response.status >= 200 && response.status < 400) {
+                        return {
+                            url,
+                            status: "success",
+                            statusCode: response.status,
+                        };
+                    }
+
+                    return {
+                        url,
+                        status: "broken",
+                        statusCode: response.status,
+                        error: `HTTP ${response.status}`,
+                    };
+                } catch (retryError) {
+                    // Both HEAD and GET failed
+                    // If it's a network error (timeout, DNS), throw so retry() handles it.
+                    // If it's a 500 (which throws due to validateStatus), throw so retry() handles it.
+
+                    if (axios.isAxiosError(retryError)) {
+                        // If it's a 5xx error, throw to retry
+                        if (
+                            retryError.response &&
+                            retryError.response.status >= 500
+                        ) {
+                            throw retryError;
+                        }
+                        // If it's a network error (no response), throw to retry
+                        if (!retryError.response) {
+                            throw retryError;
+                        }
+                    }
+
+                    // Otherwise (e.g. other errors), return error result
+                    const errorMessage = axios.isAxiosError(retryError)
+                        ? retryError.code || retryError.message
+                        : "Unknown error";
+
+                    return {
+                        url,
+                        status: "error",
+                        error: errorMessage,
+                    };
+                }
             }
-
-            return {
-                url,
-                status: "broken",
-                statusCode: response.status,
-                error: `HTTP ${response.status}`,
-            };
-        } catch (retryError) {
-            // Both HEAD and GET failed
-            const errorMessage = axios.isAxiosError(retryError)
-                ? retryError.code || retryError.message
-                : "Unknown error";
-
-            return {
-                url,
-                status: "error",
-                error: errorMessage,
-            };
+        },
+        {
+            retries: 2, // Retry twice (total 3 attempts)
+            minTimeout: 1000,
+            onRetry: (err, attempt) =>
+                console.log(
+                    `     ⚠️  Retry ${attempt}/2 for ${url}: ${err.message}`
+                ),
         }
-    }
+    );
 }
 
 /**
