@@ -100,7 +100,6 @@ jobs:
                   BITBUCKET_APP_PASSWORD: ${{ secrets.BITBUCKET_APP_PASSWORD }}
                   BITBUCKET_WORKSPACE: ${{ secrets.BITBUCKET_WORKSPACE }}
                   BITBUCKET_REPO_SLUG: ${{ secrets.BITBUCKET_REPO_SLUG }}
-                  WRITEAS_ACCESS_TOKEN: ${{ secrets.WRITEAS_ACCESS_TOKEN }}
                   NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
                   NEOCITIES_SITENAME: ${{ secrets.NEOCITIES_SITENAME }}
                   CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}

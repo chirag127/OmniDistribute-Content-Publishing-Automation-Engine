@@ -43,7 +43,6 @@ import { PixnetAdapter } from "./adapters/pixnet.js";
 import { PlurkAdapter } from "./adapters/plurk.js";
 import { GitLabAdapter } from "./adapters/gitlab.js";
 import { BitbucketAdapter } from "./adapters/bitbucket.js";
-import { WriteAsAdapter } from "./adapters/writeas.js";
 import { NeocitiesAdapter } from "./adapters/neocities.js";
 import { CodebergAdapter } from "./adapters/codeberg.js";
 import { GistAdapter } from "./adapters/gist.js";
@@ -81,7 +80,6 @@ const ADAPTERS: Adapter[] = [
     new PlurkAdapter(),
     new GitLabAdapter(),
     new BitbucketAdapter(),
-    new WriteAsAdapter(),
     new NeocitiesAdapter(),
     new CodebergAdapter(),
     new GistAdapter(),
