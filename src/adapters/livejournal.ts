@@ -128,13 +128,34 @@ export class LiveJournalAdapter implements Adapter {
                 }
             );
 
-            // Parse itemid from response
-            const itemidMatch = response.data.match(
+            // Parse itemid from response - LiveJournal can use multiple integer formats
+            // Try <int>, <i4>, and <i8> tags
+            let itemidMatch = response.data.match(
                 /<name>itemid<\/name>\s*<value><int>(\d+)<\/int>/
             );
+
             if (!itemidMatch) {
+                // Try i4 format (32-bit integer)
+                itemidMatch = response.data.match(
+                    /<name>itemid<\/name>\s*<value><i4>(\d+)<\/i4>/
+                );
+            }
+
+            if (!itemidMatch) {
+                // Try i8 format (64-bit integer)
+                itemidMatch = response.data.match(
+                    /<name>itemid<\/name>\s*<value><i8>(\d+)<\/i8>/
+                );
+            }
+
+            if (!itemidMatch) {
+                // Log the actual response for debugging
+                logger.error("LiveJournal response parsing failed", {
+                    responseData: response.data.substring(0, 500), // First 500 chars
+                    service: "omni-publisher",
+                });
                 throw new Error(
-                    "Failed to get post ID from LiveJournal response"
+                    "Failed to get post ID from LiveJournal response. Check logs for details."
                 );
             }
 
@@ -148,10 +169,22 @@ export class LiveJournalAdapter implements Adapter {
                 postId: itemid,
             };
         } catch (error: any) {
+            // Enhanced error logging
+            if (axios.isAxiosError(error)) {
+                logger.error("LiveJournal API error", {
+                    status: error.response?.status,
+                    statusText: error.response?.statusText,
+                    data:
+                        error.response?.data?.substring?.(0, 500) ||
+                        error.response?.data,
+                    service: "omni-publisher",
+                });
+            }
+
             return {
                 platform: this.name,
                 success: false,
-                error: error.response?.data || error.message,
+                error: error.message || error.response?.data || "Unknown error",
             };
         }
     }
