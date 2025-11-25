@@ -1,6 +1,5 @@
 import crypto from "node:crypto";
 import axios from "axios";
-// @ts-expect-error
 import oauth from "oauth-1.0a";
 import type { Adapter, Post, PublishResult } from "../types.js";
 import { logger } from "../utils/logger.js";

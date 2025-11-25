@@ -50,7 +50,17 @@ export class RedditAdapter implements Adapter {
       const accessToken = tokenResponse.data.access_token;
 
       // 2. Submit Link to first subreddit (or all if needed)
-      const subreddits = process.env.REDDIT_SUBREDDITS?.split(",").map((s) => s.trim());
+      const subreddits = process.env.REDDIT_SUBREDDITS?.split(",").map((s) =>
+        s.trim(),
+      );
+      if (!subreddits || subreddits.length === 0) {
+        logger.warn("No subreddits configured in REDDIT_SUBREDDITS. Skipping Reddit.");
+        return {
+          platform: this.name,
+          success: false,
+          error: "Skipping due to missing subreddit configuration.",
+        };
+      }
       const firstSubreddit = subreddits[0];
 
       const response = await axios.post(

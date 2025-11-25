@@ -10,7 +10,7 @@ const envPath = path.join(process.cwd(), ".env");
 try {
   const exists = fs.existsSync(envPath);
   if (exists) {
-    const _stats = fs.statSync(envPath);
+    fs.statSync(envPath);
   } else {
     process.exit(1);
   }

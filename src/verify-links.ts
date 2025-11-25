@@ -190,10 +190,6 @@ async function verifyLinks(): Promise<VerificationReport> {
         result,
       });
 
-      // Status indicator
-      const _statusEmoji =
-        result.status === "success" ? "✅" : result.status === "empty" ? "⚠️" : "❌";
-
       // Rate limiting delay
       await sleep(DELAY_BETWEEN_REQUESTS);
     }
