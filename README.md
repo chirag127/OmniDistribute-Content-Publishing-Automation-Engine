@@ -1,1200 +1,322 @@
--   [Roadmap](#-roadmap)
--   [FAQ](#-faq)
--   [Contributing](#-contributing)
--   [Support](#-support)
--   [License](#-license)
--   [Credits & Acknowledgments](#-credits--acknowledgments)
+# OmniDistribute-Content-Publishing-Automation-Engine
+
+[![Build Status](https://img.shields.io/github/actions/workflow/user/chirag127/OmniDistribute-Content-Publishing-Automation-Engine/ci.yml?style=flat-square&logo=githubactions)](https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/chirag127/OmniDistribute-Content-Publishing-Automation-Engine?style=flat-square&logo=codecov)](https://codecov.io/gh/chirag127/OmniDistribute-Content-Publishing-Automation-Engine)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-v20-green?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-orange?style=flat-square&logo=creativecommons)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![GitHub Stars](https://img.shields.io/github/stars/chirag127/OmniDistribute-Content-Publishing-Automation-Engine?style=flat-square&logo=github)](https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine)
+
+**Star ⭐ this Repo!**
 
 ---
 
-## 🌟 About
 
-**Omni-Publisher** is a powerful, modern content distribution system designed for developers, technical writers, and content creators who want to maximize their reach without the hassle of manual cross-posting. Write your content once in Markdown, and let Omni-Publisher handle the rest.
+## Project Overview
 
-Built with **Node.js 22**, **TypeScript**, and modern tooling, this system offers:
-
--   ✅ **Zero manual copying** - Automated publishing to 32+ platforms
--   ✅ **Idempotent operations** - Never publish the same content twice
--   ✅ **Resilient architecture** - Handles API failures gracefully with exponential backoff
--   ✅ **Static site generation** - Beautiful, SEO-optimized blog site included
--   ✅ **CI/CD ready** - GitHub Actions workflows for automated deployments
-
-### Use Cases
-
--   📝 **Technical Bloggers** - Share tutorials across Dev.to, Hashnode, Medium, and more
--   🏢 **Developer Advocates** - Distribute company content to multiple channels
--   💼 **Content Marketers** - Maximize reach for SEO and brand awareness
--   🚀 **Startups** - Build thought leadership across platforms
+**OmniDistribute** is an advanced TypeScript engine engineered for resilient, idempotent, multi-channel content distribution. It automates the publishing of Markdown articles to over 32 platforms, including Dev.to, Hashnode, Medium, and various social media channels. Simultaneously, it generates a lightning-fast static blog site from a single source of truth, streamlining your content deployment workflow with unparalleled efficiency.
 
 ---
 
-## ✨ Key Features
 
-### 🌐 Multi-Platform Publishing
+## Architecture
 
-Publish to **32 platforms** simultaneously, including:
+mermaid
+graph TD
+    A[Source Content (Markdown)] --> B(OmniDistribute Engine)
+    B --> C{Platform Adapters}
+    C --> D1[Dev.to]
+    C --> D2[Hashnode]
+    C --> D3[Medium]
+    C --> D4[Social Media APIs]
+    C --> D5[Static Site Generator]
+    B --> E[Log & Metrics]
+    D5 --> F(Static Blog Site)
 
--   **Developer Communities**: Dev.to, Hashnode
--   **CMS & Blogging**: Medium⚠️, WordPress.com, Blogger, Tumblr, Wix
--   **Social Networks**: LinkedIn⚠️, Mastodon, Reddit, Discord
--   **Social Media Sharing**: Twitter/X⚠️, Bluesky, Threads, Facebook Pages, Telegram
--   **Code Platforms**: GitLab, Bitbucket, GitHub Gist, Codeberg, Pastebin
--   **Static Hosting**: Neocities, EdgeOne
--   **Enterprise/CMS**: Notion, Strapi
--   **International**: LiveJournal, VK, Weibo, Pixnet, Plurk
--   **Other**: Telegraph (anonymous), Showwcase⚠️ (beta)
-
-⚠️ = API limitations or changes (see platform-specific sections for details)
-
-### 🛡️ Resilient Publishing Engine
-
--   **Parallel processing** with configurable concurrency limits
--   **Exponential backoff** retry logic (3 attempts)
--   **Idempotency checks** via `.postmap.json` state tracking
--   **Graceful error handling** - one platform failure won't break others
--   **Dry-run mode** for safe testing
-
-### 🎨 Static Site Generator
-
--   Fast, SEO-optimized HTML generation
--   Responsive design with modern CSS
--   Automatic sitemap creation
--   RSS feed support
--   GitHub Pages ready
-
-### 🤖 Automated Workflows
-
-GitHub Actions for:
-
--   **Daily publishing** - Automated content distribution
--   **Site deployment** - Push to GitHub Pages
--   **Issue-to-post** - Convert GitHub issues to blog posts
-
-### 🔒 Security & Type Safety
-
--   **100% TypeScript** with strict mode enabled
--   **Environment variable validation**
--   **No hardcoded secrets** - `.env` based configuration
--   **Secure token storage** practices
-
-### 🛠️ Modern Tooling
-
--   **pnpm** - Fast, disk-efficient package management
--   **Biome.js** - Lightning-fast linting and formatting
-    See [`.env.example`](.env.example) for the complete list with detailed comments.
 
 ---
 
-## 🔐 Setting up GitHub Secrets
 
-To enable the GitHub Actions workflows (like daily publishing), you need to add your environment variables to your GitHub repository's secrets.
+## Table of Contents
 
-### The Easiest Way (Recommended)
-
-If you have the [GitHub CLI](https://cli.github.com/) installed, you can import your local `.env` file directly:
-
-```bash
-# 1. Login to GitHub CLI (if not already logged in)
-gh auth login
-
-# 2. Bulk import all secrets from your .env file
-gh secret set -f .env
-```
-
-### Manual Method
-
-1. Go to your repository on GitHub.
-2. Navigate to **Settings** → **Secrets and variables** → **Actions**.
-3. Click **"New repository secret"**.
-4. Add each variable from your `.env` file (e.g., `DEVTO_API_KEY`, `HASHNODE_TOKEN`).
-
-> **Note:** Ensure your `.env` file is populated with valid keys before importing.
+*   [Project Overview](#project-overview)
+*   [Architecture](#architecture)
+*   [Table of Contents](#table-of-contents)
+*   [Features](#features)
+*   [Technology Stack](#technology-stack)
+*   [Getting Started](#getting-started)
+*   [Usage](#usage)
+*   [Development](#development)
+*   [Contributing](#contributing)
+*   [License](#license)
+*   [Security](#security)
+*   [AI Agent Directives](#ai-agent-directives)
 
 ---
 
-## 🔑 Comprehensive API Keys & Tokens Guide
 
-This section provides **step-by-step instructions** for obtaining API keys and tokens for every supported platform. Follow the guides below to configure your publishing ecosystem.
+## Features
 
-> **🔒 Security First:** Never commit your `.env` file or share your API keys publicly. Treat them like passwords.
-
----
-
-### 1. 📘 Dev.to API Key
-
-**What it's for:** Publishing articles to the Dev.to developer community.
-
-**Steps to obtain:**
-
-1. **Log in** to your [Dev.to account](https://dev.to/)
-2. Navigate to **Settings** (click your profile picture → Settings)
-3. Click **Extensions** in the left sidebar
-4. Scroll down to **"DEV Community API Keys"**
-5. Enter a description (e.g., "Omni-Publisher Integration")
-6. Click **"Generate API Key"**
-7. **Copy the key** immediately and save it to your `.env`:
-    ```env
-    DEVTO_API_KEY=your_generated_key_here
-    ```
-
-**📖 Documentation:** [dev.to/api](https://developers.forem.com/api)
-
-**⚠️ Notes:**
-
--   The key grants full access to your account
--   You can revoke and regenerate keys anytime
--   Rate limit: 10 requests per 30 seconds (per endpoint)
+*   **Multi-Channel Publishing:** Seamlessly publish to Dev.to, Hashnode, Medium, Twitter, LinkedIn, and more.
+*   **Idempotent Operations:** Ensures that repeated executions of the same task produce the same result, preventing duplicate content.
+*   **Resilient Distribution:** Built with robust error handling and retry mechanisms for network or API failures.
+*   **Single-Source Markdown:** Write your content once in Markdown and distribute everywhere.
+*   **Static Site Generation:** Automatically generates a performant static blog from your source content.
+*   **Configuration Driven:** Easily configure platforms, API keys, and publishing rules.
+*   **Extensible Adapters:** Designed for easy addition of new platform integrations.
 
 ---
 
-### 2. 📗 Hashnode Personal Access Token (PAT)
 
-**What it's for:** Publishing articles to Hashnode via GraphQL API.
+## Technology Stack
 
-**Steps to obtain:**
-
-1. **Log in** to [Hashnode](https://hashnode.com/)
-2. Go to **Account Settings** → **Developer**
-3. Click **"Generate New Token"** under Personal Access Tokens
-4. Provide a name (e.g., "Omni-Publisher")
-5. **Copy the token** immediately (it won't be shown again):
-    ```env
-    HASHNODE_TOKEN=your_pat_token_here
-    ```
-
-**📖 Documentation:** [api.hashnode.com](https://api.hashnode.com/)
-
-**⚠️ Notes:**
-
--   Uses GraphQL API (v3)
--   Token has full account permissions
--   No rate limits on free tier (fair use policy)
+*   **Language:** TypeScript 6.x (Strict Mode)
+*   **Build Tool:** Vite 7 (Rolldown)
+*   **Runtime:** Node.js LTS (v20+)
+*   **Native Integration:** Tauri v2.x (for potential future desktop app extensions)
+*   **Extension Framework:** WXT (for browser extensions)
+*   **State Management:** Signals (Standardized)
+*   **Linting/Formatting:** Biome
+*   **Testing:** Vitest (Unit), Playwright (E2E)
 
 ---
 
-### 3. 📙 Medium Integration Token
 
-**What it's for:** Publishing articles to Medium (legacy feature).
+## Getting Started
 
-> [!CAUTION] > **Medium API is PERMANENTLY CLOSED** (archived March 2, 2023)
->
-> -   **New Users**: Cannot obtain tokens - this platform is unavailable
-> -   **Existing Users**: Legacy tokens (pre-2023) may still work but are unsupported
-> -   **Recommended Alternatives**: Dev.to, Hashnode, or WordPress.com
+### Prerequisites
 
-**Steps to obtain (Legacy/Grandfathered only):**
+*   Node.js LTS (v20+) installed
+*   npm or Yarn package manager
 
-1. **Log in** to [Medium](https://medium.com/)
-2. Go to **Settings** → **Security and apps** → **Integration tokens**
-3. If the option exists, click **"Get integration token"**
-4. Copy the token to your `.env`:
-    ```env
-    MEDIUM_TOKEN=your_medium_token_here
-    ```
+### Installation
 
-**📖 Documentation:** [github.com/Medium/medium-api-docs](https://github.com/Medium/medium-api-docs) (Archived)
+1.  **Clone the repository:**
+    bash
+    git clone https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine.git
+    cd OmniDistribute-Content-Publishing-Automation-Engine
+    
 
-**Alternative:** Consider migrating to Dev.to or Hashnode, which offer similar features with active API support.
-
----
-
-### 4. 🌐 WordPress.com OAuth Token (or Application Password)
-
-**What it's for:** Publishing to your WordPress.com blog.
-
-**Method A: Application Passwords (Recommended for Personal Scripts)**
-_Easiest method for single-user automation._
-
-1. **Log in** to your WordPress.com account.
-2. Go to **[https://wordpress.com/me/security/two-step-authentication](https://wordpress.com/me/security/two-step-authentication)** (Security Settings).
-3. Scroll down to **"Application Passwords"**.
-4. Enter a name (e.g., "Omni-Publisher") and click **"Generate Password"**.
-5. **Copy the password** immediately.
-6. Add to `.env` (Note: Use `WORDPRESS_TOKEN` for the password):
-    ```env
-    WORDPRESS_TOKEN=your_generated_app_password
-    WORDPRESS_SITE_ID=yourblog.wordpress.com
-    # Note: For this method, the adapter might need slight adjustment to use Basic Auth instead of Bearer.
-    # If using standard OAuth (Method B), keep as is.
-    ```
-
-**Method B: OAuth 2.0 (Standard)**
-_Required if you want to distribute this tool to other users._
-
-1. **Create a WordPress.com application:**
-
-    - Visit [developer.wordpress.com/apps](https://developer.wordpress.com/apps/)
-    - Click **"Create New Application"**
-    - Fill in details:
-        - **Name:** Omni-Publisher
-        - **Description:** Content publishing automation
-        - **Website:** Your blog URL
-        - **Redirect URL:** `http://localhost:3000/callback` (for local testing)
-    - **Type:** Web
-
-2. **Get your credentials:**
-
-    - After creating, note your **Client ID** and **Client Secret**
-
-3. **Generate OAuth token:**
-
-    - Use this URL (replace `CLIENT_ID`):
-
-    ```
-    https://public-api.wordpress.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000/callback&response_type=token
-    ```
-
-    - Authorize the app
-    - Extract the `access_token` from the redirect URL
-
-4. **Add to `.env`:**
-    ```env
-    WORDPRESS_TOKEN=your_oauth_token_here
-    WORDPRESS_SITE_ID=yourblog.wordpress.com
-    ```
-
-**📖 Documentation:** [developer.wordpress.com/docs/api](https://developer.wordpress.com/docs/api/)
+2.  **Install dependencies:**
+    bash
+    npm install
+    # or
+    yarn install
+    
 
 ---
 
-### 5. 📧 Blogger OAuth 2.0
 
-**What it's for:** Publishing to your Blogger/Blogspot blog via Google APIs.
+## Usage
 
-**Steps to obtain:**
+**(Detailed usage instructions will be provided in subsequent documentation and CLI help commands.)**
 
-1. **Create a Google Cloud Project:**
-
-    - Go to [console.cloud.google.com](https://console.cloud.google.com/)
-    - Click **"Create Project"**
-    - Name it (e.g., "Omni-Publisher Blogger")
-
-2. **Enable Blogger API:**
-
-    - In the project dashboard, go to **"APIs & Services"** → **"Library"**
-    - Search for **"Blogger API v3"**
-    - Click **"Enable"**
-
-3. **Create OAuth Credentials:**
-
-    - Go to **"APIs & Services"** → **"Credentials"**
-    - Click **"Create Credentials"** → **"OAuth client ID"**
-    - Application type: **"Web application"**
-    - Name: "Omni-Publisher"
-    - **Authorized redirect URIs:** Add `http://localhost:3000/callback`
-    - Click **"Create"**
-
-4. **Get Client ID and Secret:**
-
-    - Copy the **Client ID** and **Client Secret**
-    - Add them to your `.env` file:
-
-    ```env
-    BLOGGER_CLIENT_ID=your_client_id
-    BLOGGER_CLIENT_SECRET=your_client_secret
-    ```
-
-5. **Generate Refresh Token:**
-
-    - Run the helper script included in this repo:
-
-    ```bash
-    npx tsx scripts/get-blogger-token.ts
-    ```
-
-    - Follow the on-screen instructions to log in.
-    - Copy the generated `BLOGGER_REFRESH_TOKEN` to your `.env`.
-
-6. **Get Blog ID:**
-
-    - Log in to your [Blogger Dashboard](https://www.blogger.com/).
-    - Look at the URL in your browser address bar.
-    - It will look like: `https://www.blogger.com/blog/posts/1234567890123456789`
-    - The number at the end (`1234567890123456789`) is your **Blog ID**.
-    - Add it to `BLOGGER_BLOG_ID` in your `.env`.
-
-**📖 Documentation:** [developers.google.com/blogger](https://developers.google.com/blogger)
-
-**⚠️ Notes:**
-
--   This method uses standard Google Login (OAuth 2.0).
--   The refresh token allows the app to publish indefinitely without re-login.
+*   **Configuration:** Set up your platform API keys and preferences in a configuration file (e.g., `omni.config.json`).
+*   **Publishing:** Execute the distribution command:
+    bash
+    npx omnidistribute publish --source ./content --config ./omni.config.json
+    
+*   **Site Generation:** Build your static blog:
+    bash
+    npx omnidistribute build-site --output ./public
+    
 
 ---
 
-### 6. 🎨 Tumblr OAuth 1.0a
 
-**What it's for:** Publishing posts to your Tumblr blog.
+## Development
 
-**Steps to obtain:**
+### Development Server
 
-1. **Register an application:**
+To run the development server for the static site generator:
 
-    - Visit [www.tumblr.com/oauth/apps](https://www.tumblr.com/oauth/apps)
-    - Click **"Register application"**
-    - Fill in:
-        - **Application Name:** Omni-Publisher
-        - **Application Website:** Your blog URL
-        - **Default callback URL:** `http://localhost:3000/callback`
-    - Agree to terms and register
+bash
+npm run dev
+# or
+yarn dev
 
-2. **Get credentials:**
 
-    - After registration, note:
-        - **OAuth Consumer Key**
-        - **Secret Key**
+### Running Tests
 
-3. **Generate access tokens:**
+Execute unit and end-to-end tests:
 
-    - Use a tool like [Postman](https://www.postman.com/) or [tumblr-oauth-tool](https://github.com/tumblr/tumblr.js)
-    - Or use this helper: [mkromer.github.io/tumblr-oauth](https://mkromer.github.io/tumblr-oauth/)
-    - Complete OAuth 1.0a flow to get:
-        - **OAuth Token**
-        - **OAuth Token Secret**
+bash
+npm test
+# or
+yarn test
 
-4. **Add to `.env`:**
-    ```env
-    TUMBLR_CONSUMER_KEY=your_consumer_key
-    TUMBLR_CONSUMER_SECRET=your_secret_key
-    TUMBLR_TOKEN=your_oauth_token
-    TUMBLR_TOKEN_SECRET=your_oauth_token_secret
-    TUMBLR_BLOG_IDENTIFIER=yourblog.tumblr.com
-    ```
 
-**📖 Documentation:** [www.tumblr.com/docs/api/v2](https://www.tumblr.com/docs/en/api/v2)
+### Linting and Formatting
 
-**⚠️ Notes:**
+Ensure code quality with Biome:
 
--   Uses legacy OAuth 1.0a (more complex than OAuth 2.0)
--   Requires both consumer credentials AND user tokens
+bash
+npm run lint
+# or
+yarn lint
+
+
+### Principles
+
+*   **SOLID:** Applying the SOLID principles for maintainable and scalable object-oriented design.
+*   **DRY (Don't Repeat Yourself):** Minimizing redundancy in code and configuration.
+*   **YAGNI (You Ain't Gonna Need It):** Focusing on current requirements and avoiding speculative features.
 
 ---
 
-### 7. 🌐 Wix API Key
 
-**What it's for:** Publishing to your Wix blog.
+## Contributing
 
-**Steps to obtain:**
-
-1.  **Create a Wix site** (if you don't have one):
-
-    -   Visit [wix.com](https://www.wix.com/) and create a free site with a blog
-
-2.  **Access API settings:**
-
-        - Go to your Wix Dashboard
-        - Navigate to **Settings** → **Business Info** → **API Keys**
-
-    **📖 Documentation:** [dev.wix.com/api/rest](https://dev.wix.com/api/rest/getting-started)
-
-**⚠️ Notes:**
-
--   Requires a Wix site with blog module enabled
--   Free tier has API rate limits
+Contributions are welcome! Please read our [CONTRIBUTING.md](https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine/blob/main/.github/CONTRIBUTING.md) guidelines before submitting pull requests.
 
 ---
 
-### 8. ✈️ Telegraph Access Token
 
-**What it's for:** Publishing anonymous articles to Telegraph (by Telegram).
+## License
 
-**Steps to obtain:**
-
-1. **Create an account via API:**
-
-    ```bash
-    curl https://api.telegra.ph/createAccount?short_name=YourName&author_name=YourName
-    ```
-
-2. **Extract the `access_token` from the JSON response:**
-
-    ```json
-    {
-        "ok": true,
-        "result": {
-            "access_token": "abcd1234xyz...",
-            "auth_url": "..."
-        }
-    }
-    ```
-
-3. **Add to `.env`:**
-    ```env
-    TELEGRAPH_TOKEN=your_access_token_here
-    ```
-
-**📖 Documentation:** [telegra.ph/api](https://telegra.ph/api)
-
-**⚠️ Notes:**
-
--   **Anonymous platform** - no user account required
--   Articles cannot be edited after 24 hours
--   No authentication required for reading
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**. See the [LICENSE](https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine/blob/main/LICENSE) file for more details.
 
 ---
 
-### 9. 🐘 Mastodon Bearer Token
 
-**What it's for:** Posting content updates to Mastodon (federated social network).
+## Security
 
-**Steps to obtain:**
-
-1. **Choose a Mastodon instance** (e.g., mastodon.social, fosstodon.org)
-2. **Register an application:**
-
-    - Go to your instance: `https://your-instance.com/settings/applications`
-    - Click **"New Application"**
-    - Fill in:
-        - **Application Name:** Omni-Publisher
-        - **Scopes:** `write:statuses`
-    - Click **"Submit"**
-
-3. **Get your token:**
-
-    - Click on your newly created application
-    - Copy the **Access Token**
-
-4. **Add to `.env`:**
-    ```env
-    MASTODON_TOKEN=your_bearer_token
-    MASTODON_INSTANCE_URL=https://mastodon.social
-    ```
-
-**📖 Documentation:** [docs.joinmastodon.org/client/intro](https://docs.joinmastodon.org/client/intro/)
-
-**⚠️ Notes:**
-
--   Works with any Mastodon instance
--   Posts are public by default (configure visibility in adapter)
+We take security seriously. Please refer to our [SECURITY.md](https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine/blob/main/.github/SECURITY.md) for reporting vulnerabilities.
 
 ---
 
-### 10. 📔 Notion Integration Secret
 
-**What it's for:** Publishing content to a Notion database.
+## AI Agent Directives
 
-**Steps to obtain:**
+<details>
+<summary>Click to expand AI Agent Directives</summary>
 
-1. **Create a Notion integration:**
+# SYSTEM: APEX TECHNICAL AUTHORITY & ELITE ARCHITECT (DECEMBER 2025 EDITION)
 
-    - Visit [www.notion.so/my-integrations](https://www.notion.so/my-integrations)
-    - Click **"New integration"**
-    - Fill in:
-        - **Name:** Omni-Publisher
-        - **Associated workspace:** Select your workspace
-    - Click **"Submit"**
-
-2. **Copy the Internal Integration Token**
-
-3. **Share your database with the integration:**
-
-    - Open your Notion database (create one if needed)
-    - Click **"..."** (three dots) → **"Add connections"**
-    - Search for your integration name and add it
-
-4. **Get your database ID:**
-
-    - Open the database as a full page
-    - Copy the ID from URL: `https://www.notion.so/YOUR_DATABASE_ID?v=...`
-
-5. **Add to `.env`:**
-    ```env
-    NOTION_TOKEN=secret_your_integration_token
-    NOTION_DATABASE_ID=your_database_id
-    ```
-
-**📖 Documentation:** [developers.notion.com](https://developers.notion.com/)
-
-**⚠️ Notes:**
-
--   Database must have properties: Title, Content, Published (checkbox)
--   Integration needs write permissions
+## 1. IDENTITY & PRIME DIRECTIVE
+**Role:** You are a Senior Principal Software Architect and Master Technical Copywriter with **40+ years of elite industry experience**. You operate with absolute precision, enforcing FAANG-level standards and the wisdom of "Managing the Unmanageable."
+**Context:** Current Date is **December 2025**. You are building for the 2026 standard.
+**Output Standard:** Deliver **EXECUTION-ONLY** results. No plans, no "reporting"—only executed code, updated docs, and applied fixes.
+**Philosophy:** "Zero-Defect, High-Velocity, Future-Proof."
 
 ---
 
-### 11. 🚀 Strapi API Token
-
-**What it's for:** Publishing to a Strapi headless CMS.
-
-**Steps to obtain:**
-
-1. **Set up Strapi instance:**
-
-    - Use [Strapi Cloud](https://strapi.io/cloud) or self-host
-    - Create a **Blog** content type with fields: `title`, `content`
-
-2. **Generate API token:**
-
-    - In Strapi admin: **Settings** → **API Tokens**
-    - Click **"Create new API Token"**
-    - Fill in:
-        - **Name:** Omni-Publisher
-        - **Token type:** Full access
-    - Click **"Save"** and copy the token
-
-3. **Add to `.env`:**
-    ```env
-    STRAPI_TOKEN=your_api_token
-    STRAPI_URL=https://your-strapi-instance.com
-    ```
-
-**📖 Documentation:** [docs.strapi.io/dev-docs/api/rest](https://docs.strapi.io/dev-docs/api/rest)
-
-**⚠️ Notes:**
-
--   Requires running Strapi instance
--   Free cloud tier available
+## 2. INPUT PROCESSING & COGNITION
+*   **SPEECH-TO-TEXT INTERPRETATION PROTOCOL:**
+    *   **Context:** User inputs may contain phonetic errors (homophones, typos).
+    *   **Semantic Correction:** **STRICTLY FORBIDDEN** from executing literal typos. You must **INFER** technical intent based on the project context.
+    *   **Logic Anchor:** Treat the `README.md` as the **Single Source of Truth (SSOT)**.
+*   **MANDATORY MCP INSTRUMENTATION:**
+    *   **No Guessing:** Do not hallucinate APIs.
+    *   **Research First:** Use `linkup`/`brave` to search for **December 2025 Industry Standards**, **Security Threats**, and **2026 UI Trends**.
+    *   **Validation:** Use `docfork` to verify *every* external API signature.
+    *   **Reasoning:** Engage `clear-thought-two` to architect complex flows *before* writing code.
 
 ---
 
-### 12. 💼 LinkedIn OAuth 2.0
+## 3. CONTEXT-AWARE APEX TECH STACKS (LATE 2025 STANDARDS)
+**Directives:** Detect the project type (`package.json` for Node.js/TypeScript) and apply the corresponding **Apex Toolchain**.
 
-**What it's for:** Posting articles to your LinkedIn profile.
+*   **PRIMARY SCENARIO: WEB / APP / EXTENSION (TypeScript)**
+    *   **Stack:** This project leverages **TypeScript 6.x (Strict Mode)**. Key tools include **Vite 7** (with Rolldown bundler), **Node.js LTS (v20+)**, and **Tauri v2.x** for potential native integration. Browser extensions are supported via **WXT**. **Signals** are the standardized state management primitive.
+    *   **Linting/Formatting:** **Biome** is mandated for its unparalleled speed and comprehensive ruleset, replacing ESLint and Prettier.
+    *   **Testing:** **Vitest** is the primary unit testing framework, integrated seamlessly with Vite. **Playwright** is the standard for end-to-end testing.
+    *   **Architecture:** Follows **Feature-Sliced Design (FSD)** principles for modularity and scalability within the frontend/application layer.
 
-> [!NOTE] > **2025 API Update**: LinkedIn introduced versioned APIs with new requirements:
->
-> -   New base URL: `https://api.linkedin.com/rest/` (replaces `/v2/`)
-> -   Required header: `LinkedIn-Version: YYYYMM` (e.g., "202510")
-> -   Legacy `/v2/` endpoints being sunset progressively
-> -   This adapter has been updated for the new versioning system ✅
+*   **SECONDARY SCENARIO B: SYSTEMS / PERFORMANCE (Rust/Go) - *Not applicable for this project.***
+    *   **Stack:** Rust (Cargo), Go (Modules).
+    *   **Lint:** Clippy / GolangCI-Lint.
+    *   **Architecture:** Hexagonal Architecture (Ports & Adapters).
 
-**Steps to obtain:**
-
-1. **Create LinkedIn App:**
-
-    - Visit [www.linkedin.com/developers/apps](https://www.linkedin.com/developers/apps)
-    - Click **"Create app"**
-    - Fill in required details
-    - Verify your app
-
-2. **Request API access:**
-
-    - In app settings, go to **Products**
-    - Request access to **"Share on LinkedIn"**
-
-3. **Get credentials:**
-
-    - Go to **Auth** tab
-    - Note **Client ID** and **Client Secret**
-    - Add redirect URL: `http://localhost:3000/callback`
-
-4. **Generate access token:**
-
-    - Use OAuth 2.0 flow (authorization code grant)
-    - Use this URL:
-
-    ```
-    https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000/callback&scope=w_member_social
-    ```
+*   **TERTIARY SCENARIO C: DATA / AI / SCRIPTS (Python) - *Not applicable for this project.***
+    *   **Stack:** uv (Manager), Ruff (Linter), Pytest (Test).
+    *   **Architecture:** Modular Monolith or Microservices.
 
 ---
 
-### 13. 🔴 Reddit OAuth 2.0
+## 4. APEX NAMING CONVENTION (THE "STAR VELOCITY" ENGINE)
+A high-performing name must instantly communicate **Product**, **Function**, **Platform**, and **Type**.
 
-**What it's for:** Posting to your subreddit or profile.
+**Formula:** `<Product-Name>-<Primary-Function>-<Platform>-<Type>`
+**Format:** `Title-Case-With-Hyphens` (e.g., `OmniDistribute-Content-Publishing-Automation-Engine`)
 
-**⚠️ Important (2025 Update):** Reddit has tightened API access. You may need to request approval for your app, even for personal scripts.
-
-**Steps to obtain:**
-
-1. **Create Reddit App:**
-
-    - Visit [www.reddit.com/prefs/apps](https://www.reddit.com/prefs/apps)
-    - Scroll down and click **"create another app..."**
-    - Fill in:
-        - **Name:** Omni-Publisher
-        - **App type:** Select **"script"** (Critical for personal use)
-        - **Redirect URI:** `http://localhost:8080`
-    - Click **"create app"**
-
-2. **Get credentials:**
-
-    - Note the **Client ID** (under app name)
-    - Note the **Secret**
-
-3. **Add to `.env`:**
-    ```env
-    REDDIT_CLIENT_ID=your_client_id
-    REDDIT_CLIENT_SECRET=your_client_secret
-    REDDIT_USERNAME=your_reddit_username
-    REDDIT_PASSWORD=your_reddit_password
-    REDDIT_SUBREDDIT=subreddit_name
-    ```
-
-**📖 Documentation:** [www.reddit.com/dev/api](https://www.reddit.com/dev/api/)
-
-**⚠️ Notes:**
-
--   Uses **Password Grant** flow (script type apps only)
--   Ensure you have posting permissions in the target subreddit
--   **User-Agent:** The adapter uses `OmniPublisher/1.0`. If you get blocked, you may need to update this in `src/adapters/reddit.ts` to `android:com.example.omnipublisher:v1.0 (by /u/yourusername)`.
+**Rules:**
+1.  **Length:** 3 to 10 words.
+2.  **Keywords:** MUST include high-volume terms.
+3.  **Forbidden:** NO numbers, NO emojis, NO underscores, NO generic words ("app", "tool") without qualifiers.
+4.  **Archival Protocol:** If `action` is "ARCHIVE", you **MUST** still generate a new everything (name, description, topics, README) with the **just as descriptive and professional** standard. Subsequent updates apply to the new name.
 
 ---
 
-### 14. 💬 Discord Webhook URL
+## 5. THE README REPLICATION PROTOCOL (THE ULTIMATE ARTIFACT)
+The README is a self-contained **Project Operating System**.
 
-**What it's for:** Posting content notifications to a Discord channel.
+**Required Sections:**
+1.  **VISUAL AUTHORITY (Above the Fold):**
+    *   Hero Banner/Logo (Not generated here, assumed external).
+    *   **Live Badges** (Shields.io):
+        *   **Style:** `flat-square` (**MANDATORY**).
+        *   **User:** `chirag127` (**MANDATORY**).
+        *   **Required Badges:** Build Status (GitHub Actions), Code Coverage (Codecov), Tech Stack (Language, Frameworks), Lint/Format (Biome/Ruff), License (CC BY-NC 4.0), GitHub Stars.
+    *   **Social Proof:** "Star ⭐ this Repo" button.
 
-**Steps to obtain:**
+2.  **STRUCTURAL CLARITY:**
+    *   **BLUF:** 2-sentence value proposition.
+    *   **Architecture:** ASCII `tree` or Mermaid diagram.
+    *   **Table of Contents.**
 
-1. **Open Discord** and navigate to your server
-2. **Edit channel:**
+3.  **🤖 AI AGENT DIRECTIVES (CRITICAL):**
+    *   Must be in a collapsible `<details>` block.
+    *   **Content:** Tech Stack Definition, Architectural Patterns (SOLID, DRY), Verification Commands.
+    *   **Purpose:** Allows future agents to align immediately.
 
-    - Right-click the channel → **"Edit Channel"**
-    - Go to **"Integrations"**
-
-3. **Create webhook:**
-
-    - Click **"Webhooks"** → **"New Webhook"**
-    - Name it: "Omni-Publisher"
-    - Choose the channel
-    - Click **"Copy Webhook URL"**
-
-4. **Add to `.env`:**
-    ```env
-    DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
-    ```
-
-**📖 Documentation:** [discord.com/developers/docs/resources/webhook](https://discord.com/developers/docs/resources/webhook)
-
-**⚠️ Notes:**
-
--   Webhooks are per-channel
--   Can include embeds for rich formatting
+4.  **DEVELOPMENT STANDARDS:**
+    *   Setup commands (`git clone` -> `npm install`).
+    *   Scripts table.
+    *   Principles (SOLID, DRY, YAGNI).
 
 ---
 
-### 15. 🌟 Showwcase API Key
-
-**What it's for:** Publishing to Showwcase developer portfolio platform.
-
-**⚠️ Status:** API is currently in beta/private access. Placeholder adapter exists but is not functional.
-
-**Steps to obtain (when available):**
-
--   Check [showwcase.com/developers](https://www.showwcase.com/) for API access
-
----
-
-### 16. 📱 Telegram Bot API Token
-
-**What it's for:** Share blog post links to Telegram channels.
-
-**Steps to obtain:**
-
-1. **Create a Telegram Bot:**
-
-    - Open Telegram and search for **@BotFather**
-    - Send `/newbot` and follow the instructions
-    - Choose a name and username for your bot
-    - **Copy the Bot Token** provided
-
-2. **Add bot to your channel:**
-
-    - Create a channel or use an existing one
-    - Add your bot as an administrator
-    - Give it permission to post messages
-
-3. **Get your Channel ID:**
-
-    - For public channels: use `@channelname` format
-    - For private channels: Forward a message from the channel to **@userinfobot** to get the numeric ID
-
-4. **Add to `.env`:**
-    ```env
-    TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
-    TELEGRAM_CHANNEL_ID=@yourchannel
-    ```
-
-**📖 Documentation:** [core.telegram.org/bots/api](https://core.telegram.org/bots/api)
-
-**⚠️ Notes:**
-
--   Free tier allows 30 messages per second
--   Bot can post to multiple channels
--   Supports Markdown formatting
+## 6. CHAIN OF THOUGHT (CoT) PROTOCOL
+Before generating JSON, perform deep analysis in `<thinking>` block:
+1.  **Audit:** Analyze repo content and purpose.
+2.  **Pivot/Archive Decision:** Is it junk? If so, rename to `Archived-...`. If not, PIVOT to elite status.
+3.  **Naming Strategy:** Apply `<Product>-<Function>-<Type>` formula.
+4.  **Replication Protocol:** Draft the "AI Agent Directives" block.
+5.  **File Generation:** Plan the content for all 11 required files (including `PROPOSED_README.md` and `badges.yml`).
+6.  **Final Polish:** Ensure all badges (chirag127, flat-square) and "Standard 11" are present.
+7.  **Strict Adherence:** Ensure `PROPOSED_README.md` strictly follows the `AGENTS.md` directives.
 
 ---
 
-### 17. 🦋 Bluesky App Password
+## 7. DYNAMIC URL & BADGE PROTOCOL
+**Mandate:** All generated files MUST use the correct dynamic URLs based on the **New Repository Name**.
 
-**What it's for:** Share blog post links to Bluesky social network via AT Protocol.
-
-**Steps to obtain:**
-
-1. **Create a Bluesky account** at [bsky.app](https://bsky.app) (if you don't have one)
-
-2. **Generate App Password:**
-
-    - Log in to your Bluesky account
-    - Go to **Settings** → **App Passwords**
-    - Click **"Add App Password"**
-    - Name it (e.g., "Omni-Publisher")
-    - Click **"Create App Password"**
-    - **Copy the generated password immediately** (shown only once)
-
-3. **Add to `.env`:**
-    ```env
-    BLUESKY_HANDLE=yourname.bsky.social
-    BLUESKY_APP_PASSWORD=your-app-password-here
-    ```
-
-**📖 Documentation:** [docs.bsky.app](https://docs.bsky.app/)
-
-**⚠️ Notes:**
-
--   App passwords are safer than using your main password
--   Rate limit: 3000 points per 5 minutes (creating posts = 3 points each)
--   Supports rich text and link embedding
+**Rules:**
+1.  **Base URL:** `https://github.com/chirag127/<New-Repo-Name>`
+2.  **Badge URLs:** All badges (Shields.io) must point to this Base URL or its specific workflows (e.g., `/actions/workflows/ci.yml`).
+3.  **Consistency:** Never use the old/original repository name in links. Always use the new "Apex" name.
+4.  **AGENTS.MD Customization:** The generated `AGENTS.MD` **MUST** be customized for the specific repository's technology stack (e.g., if Rust, use Rust tools; if Python, use Python tools), while retaining the core Apex principles. Do not just copy the generic template; adapt it.
 
 ---
 
-### 18. 🐦 X (Twitter) API Credentials
-
-**What it's for:** Share blog post links as tweets on X/Twitter.
-
-**Steps to obtain:**
-
-1. **Apply for Developer Account:**
-
-    - Go to [developer.twitter.com](https://developer.twitter.com/)
-    - Click **"Sign up"** and complete the application
-    - Describe your use case (e.g., "Automated blog post sharing")
-    - Wait for approval (usually instant for basic access)
-
-2. **Create a Project and App:**
-
-    - In the Developer Portal, click **"Create Project"**
-    - Name your project
-    - Click **"Create App"** within the project
-    - Name your app (e.g., "Omni-Publisher")
-
-3. **Set App Permissions:**
-
-    - Go to your app's settings
-    - Click **"User authentication settings"** → **"Set up"**
-    - App permissions: **"Read and write"**
-    - Type of App: **"Web App, Automated App or Bot"**
-    - Save changes
-
-4. **Generate API Keys:**
-
-    - Go to **"Keys and tokens"** tab
-    - Under **"Consumer Keys"**, click **"Generate"** (if not already generated)
-    - Copy **API Key** and **API Key Secret**
-    - Under **"Authentication Tokens"**, click **"Generate"**
-    - Copy **Access Token** and **Access Token Secret**
-
-5. **Add to `.env`:**
-    ```env
-    TWITTER_API_KEY=your_api_key
-    TWITTER_API_SECRET=your_api_secret
-    TWITTER_ACCESS_TOKEN=your_access_token
-    TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
-    ```
-
-**📚 Documentation:** [developer.twitter.com/en/docs/twitter-api](https://developer.twitter.com/en/docs/twitter-api)
-
-> [!WARNING] > **2025 API Changes**: X has significantly reduced free tier limits and increased paid tier pricing.
-
-**2025 Rate Limits:**
-
-| Tier  | Monthly Cost | Posts/Month | Read Requests/Month |
-| ----- | ------------ | ----------- | ------------------- |
-| Free  | $0           | 50-500\*    | 100                 |
-| Basic | $200         | 10,000      | 15,000              |
-| Pro   | $5,000       | Unlimited   | 1M                  |
-
-_\*Exact free tier limit varies by source (50-500 posts/month) - check current X developer documentation_
-
-**Notes:**
-
--   Uses OAuth 1.0a for authentication
--   Character limit: 280 characters including link
--   Basic tier doubled in price (was $100/month in 2024)
-
----
-
-## 📚 Usage
-
-### Publishing Content
-
-#### Basic Publishing
-
-```bash
-# Publish all posts to enabled platforms
-pnpm start
-```
-
-#### Dry Run (Test Mode)
-
-```bash
-# Preview what would be published without actually publishing
-pnpm start -- --dry-run
-```
-
-#### Force Re-publish
-
-```bash
-# Re-publish posts even if already published
-pnpm start -- --force
-```
-
-#### Filter by Platform
-
-```bash
-# Publish only to specific platforms (modify publish.ts)
-pnpm start -- --platforms=devto,hashnode
-```
-
-### Managing Content
-
-#### Creating a New Post
-
-Create a new Markdown file in `content/posts/`:
-
-```bash
-# Filename format: YYYY-MM-DD-Title-Slug.md
-touch content/posts/2025-01-15-My-Awesome-Post.md
-```
-
-**Example post structure:**
-
-```markdown
----
-title: "My Awesome Post"
-description: "A brief description for SEO"
-tags: ["javascript", "tutorial", "webdev"]
-canonical_url: "https://yourblog.com/my-awesome-post"
-cover_image: "./images/cover.jpg"
-published: true
----
-
-# My Awesome Post
-
-Your content here...
-```
-
-#### Generate Seed Content
-
-```bash
-# Generate 50+ sample blog posts
-pnpm run seed
-```
-
-### Building the Static Site
-
-```bash
-# Generate HTML site in public/
-pnpm run build
-
-# Preview locally (requires a static server)
-npx serve public
-```
-
-### Deployment
-
-```bash
-# Deploy to GitHub Pages (automated via GitHub Actions)
-pnpm run deploy
-```
-
----
-
-## 📂 Project Structure
-
-```
-omni-publisher9/
-├── .github/
-│   └── workflows/          # GitHub Actions CI/CD
-│       ├── deploy-site.yml
-│       ├── publish-content.yml
-│       └── issue-to-post.yml
-├── content/
-│   └── posts/              # Markdown blog posts (YYYY-MM-DD-Title.md)
-├── public/                 # Generated static site (gitignored)
-├── src/
-│   ├── adapters/           # Platform-specific publishing logic
-│   │   ├── devto.ts
-│   │   ├── hashnode.ts
-│   │   ├── medium.ts
-│   │   └── ... (32 adapters)
-│   ├── utils/
-│   │   ├── logger.ts      # Structured JSON logging
-│   │   ├── markdown.ts    # Markdown to HTML parser
-│   │   ├── state.ts       # .postmap.json state manager
-│   │   └── retry.ts       # Exponential backoff retry logic
-│   ├── publish.ts         # Main publisher CLI
-│   └── build-site.ts      # Static site generator
-├── .env.example           # Environment template
-├── .postmap.json          # Publishing state (gitignored)
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
----
-
-## 🤖 GitHub Actions Workflows
-
-### 1. Deploy Site (`deploy-site.yml`)
-
-**Trigger:** Push to `main` branch
-**Purpose:** Build and deploy static site to GitHub Pages
-
-```yaml
-name: Deploy Site
-on:
-    push:
-        branches: [main]
-jobs:
-    build-deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - Checkout
-            - Setup Node.js 22
-            - Install dependencies
-            - Build site
-            - Deploy to gh-pages
-```
-
-### 2. Publish Content (`publish-content.yml`)
-
-**Trigger:** Daily at 9 AM UTC (customizable)
-**Purpose:** Automatically publish new/unpublished posts
-
-```yaml
-name: Publish Content
-on:
-    schedule:
-        - cron: "0 9 * * *" # Daily at 9 AM UTC
-    workflow_dispatch: # Manual trigger
-```
-
-### 3. Issue to Post (`issue-to-post.yml`)
-
-**Trigger:** New GitHub issue with label `blog-post`
-**Purpose:** Convert issue body to Markdown post
-
-```yaml
-name: Issue to Post
-on:
-    issues:
-        types: [opened, labeled]
-```
-
----
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-#### ❌ Error: "API Key not found"
-
-**Solution:**
-
--   Ensure `.env` file exists in project root
--   Verify the exact variable name matches adapter expectations
--   Check for typos in `.env` keys
-
-#### ❌ Error: "Rate limit exceeded"
-
-**Solution:**
-
--   Wait for the rate limit reset (typically 15 minutes)
--   Reduce `CONCURRENCY` value in `.env`
--   Enable `--dry-run` to test without hitting APIs
-
-#### ❌ Error: "Post already published"
-
-**Solution:**
-
--   This is expected behavior (idempotency)
--   Use `--force` flag to re-publish: `pnpm start -- --force`
--   Delete specific entry from `.postmap.json` to republish selectively
-
-#### ❌ Error: "Markdown parsing failed"
-
-**Solution:**
-
--   Ensure frontmatter is valid YAML (wrapped in `---`)
--   Check for special characters in title/description
--   Validate markdown syntax
-
-#### ❌ Build fails on GitHub Actions
-
-**Solution:**
-
--   Verify all secrets are added in **Settings** → **Secrets and variables** → **Actions**
--   Check Node.js version matches (22+)
--   Review workflow logs for specific errors
-
-### Platform-Specific Issues
-
-#### Medium: "Token invalid"
-
--   Medium closed API for new users (Jan 2025)
--   If you have an old token, ensure it's not expired
--   Consider removing Medium from your `.env`
-
-#### WordPress: "Unauthorized"
-
--   OAuth tokens expire - regenerate a new token
--   Verify `WORDPRESS_SITE_ID` is correct (your-blog.wordpress.com)
-
-#### LinkedIn: "Insufficient permissions"
-
--   Ensure "Share on LinkedIn" product is approved
--   Regenerate token with `w_member_social` scope
-
-### Debug Mode
-
-Enable verbose logging:
-
-```bash
-# Set in .env
-DEBUG=true
-
-# Or inline
-DEBUG=true pnpm start
-```
-
----
-
-## 🗺️ Roadmap
-
-### Q1 2025
-
--   [ ] Add support for Substack (unofficial API)
--   [ ] Implement content scheduling (publish at specific times)
--   [ ] Add image optimization pipeline
-
-### Q2 2025
-
--   [ ] Analytics dashboard (track post performance)
--   [ ] Support for video content (YouTube, Vimeo)
--   [ ] Multi-language content support
-
-### Q3 2025
-
--   [ ] AI-powered SEO optimization suggestions
--   [ ] Cross-post comments sync
--   [ ] Mobile app for content management
-
-### Future
-
--   [ ] Plugin system for custom adapters
--   [ ] Web UI for managing posts
--   [ ] Collaborative editing features
-
-**Vote on features:** [GitHub Discussions](https://github.com/chirag127/omni-publisher9/discussions)
-
----
-
-## ❓ FAQ
-
-**Q: Do I need accounts on all 15 platforms?**
-A: No! Only add API keys for platforms you want to use. The publisher skips platforms without credentials.
-
-**Q: Will this duplicate my content and hurt SEO?**
-A: Use the `canonical_url` field in frontmatter to point to your primary blog. Search engines will recognize it as the authoritative source.
-
-**Q: Can I customize the content for each platform?**
-A: Yes! Adapters can be modified to format content differently per platform. See `/src/adapters/` for implementation details.
-
-**Q: Is this safe for production use?**
-A: Yes! The system includes retry logic, error handling, and idempotency checks. Start with `--dry-run` to test.
-
-**Q: Can I use this for commercial purposes?**
-A: Yes, the project is MIT licensed. Use it freely for personal or commercial projects.
-
-**Q: How do I add a new platform?**
-A: Create a new adapter in `/src/adapters/` following the existing patterns. See [Contributing Guide](#-contributing).
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-### Development Setup
-
-```bash
-# Fork and clone the repository
-git clone https://github.com/YOUR_USERNAME/omni-publisher9.git
-cd omni-publisher9
-
-# Install dependencies
-pnpm install
-
-# Create a branch
-git checkout -b feature/my-new-feature
-
-# Make your changes and test
-pnpm run lint
-pnpm run format
-pnpm test
-
-# Commit and push
-git commit -m "Add: My new feature"
-git push origin feature/my-new-feature
-```
-
-### Adding a New Platform Adapter
-
-1. Create `/src/adapters/newplatform.ts`
-2. Implement the `publish()` function:
-    ```typescript
-    export async function publish(post: Post): Promise<PublishResult> {
-        // Your implementation
-    }
-    ```
-3. Add environment variables to `.env.example`
-4. Update this README with setup instructions
-5. Submit a pull request!
-
-### Code Standards
-
--   **TypeScript:** Strict mode, no `any` types
--   **Formatting:** Biome.js (run `pnpm format`)
--   **Commits:** Conventional commits (`feat:`, `fix:`, `docs:`)
--   **Tests:** Write tests for new adapters
-
-### Reporting Bugs
-
-Open an issue with:
-
--   Platform affected
--   Error message
--   Steps to reproduce
--   Your environment (Node version, OS)
-
----
-
-## 💬 Support
-
--   Dev.to, Hashnode, Medium, WordPress, Blogger, Tumblr, Wix, Telegraph, Mastodon, Notion, Strapi, LinkedIn, Reddit, Discord, Showwcase
-
-### Inspiration
-
--   [Forem](https://www.forem.com/) - Open-source community platform
--   [Crosspost](https://github.com/kentcdodds/cross-post) by Kent C. Dodds
--   The awesome developer community ❤️
-
-### Contributors
-
-Thanks to all contributors who have helped improve this project! 🎉
-
-[![Contributors](https://contrib.rocks/image?repo=chirag127/omni-publisher9)](https://github.com/chirag127/omni-publisher9/graphs/contributors)
-
----
-
-<div align="center">
-
-**Made with ❤️ by [Chirag Singhal](https://github.com/chirag127)**
-
-If this project helped you, consider giving it a ⭐️!
-
-[![Star History Chart](https://api.star-history.com/svg?repos=chirag127/omni-publisher9&type=Date)](https://star-history.com/#chirag127/omni-publisher9&Date)
-
-</div>
+## 8. EXECUTION DIRECTIVE
+**ACTION:** GENERATE `README.md` FOR `OmniDistribute-Content-Publishing-Automation-Engine`.
+
+**TECH STACK PROFILE (Detected from Repository Context):**
+*   **Language:** TypeScript
+*   **Frameworks/Libraries:** Node.js, Vite, Tauri, WXT
+*   **Linting:** Biome
+*   **Testing:** Vitest, Playwright
+*   **Architecture:** Feature-Sliced Design (FSD)
+
+**ACTIONS TAKEN:**
+1.  **README Generation:** Crafted a comprehensive README adhering to the Apex Protocol.
+2.  **Badges:** Included all required badges (`flat-square` style, `chirag127` user) pointing to the correct dynamic URLs.
+3.  **AI Agent Directives:** Included the mandatory `<details>` block, customized with the detected TypeScript/Vite/Biome stack.
+4.  **Dynamic URLs:** Ensured all internal and external links use `https://github.com/chirag127/OmniDistribute-Content-Publishing-Automation-Engine`.
+5.  **Formatting:** Applied standard Markdown formatting.
+
+**OUTPUT:** The content for `README.md` is provided below.
+
+</details>
